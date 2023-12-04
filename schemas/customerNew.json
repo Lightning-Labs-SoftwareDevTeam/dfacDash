@@ -1,0 +1,63 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "properties": {
+        "username": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+        },
+        "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 20
+        },
+        "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+        },
+        "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+        },
+        "dodid:": {
+            "type": "integer",
+            "minimum": 10,
+            "maximum": 10
+        },
+        "phNumber": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 14
+        },
+        "isAdmin": {
+            "type": "boolean"
+        },
+        "karmaScore": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+        },
+        "email": {
+            "type":  "string",
+            "minLength": 6,
+            "maxLength": 100,
+            "format": "email"
+        },
+        "profilePicURL": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": false,
+    "required": [
+        "username",
+        "password",
+        "firstName",
+        "lastName",
+        "dodid",
+        "phNumber"
+    ]
+}

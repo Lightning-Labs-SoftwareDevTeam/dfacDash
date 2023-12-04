@@ -1,0 +1,35 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "properties": {
+        "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 20
+        },
+        "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+        },
+        "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+        },
+        "phNumber": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 14
+        },
+        "isAdmin": {
+            "type": "boolean"
+        },
+        "profilePicURL": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": false,
+    "required": []
+}
