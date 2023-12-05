@@ -15,3 +15,30 @@ const { BadRequestError, ForbiddenError } = require("../expressError");
 const { createToken } = require("../helpers/tokens");
 
 /** TODO - CRUD router functions for customers data */
+
+// POST route for Creating new customers
+
+// GET route for Reading customer data
+/** returns all customers */
+router.get("/", async (req, res, next) => {
+    try {
+        const results = await db.query(
+            `SELECT id,
+                    username,
+                    fname AS "firstName",
+                    lname AS "lastName",
+                    dodid,
+                    phnumber AS "phNumber",
+                    is_admin AS "isAdmin",
+                    karma_score AS "karmaScore",
+                    email,
+                    profile_picAS "profilePicURL"
+                FROM customers`)
+
+        return res.json(results.rows);
+    } catch (err) {
+        return next(err);
+    }
+});
+
+module.exports = router;
