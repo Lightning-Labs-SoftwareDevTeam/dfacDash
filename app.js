@@ -17,10 +17,6 @@ app.use(cors());
 app.use(morgan("tiny"));
 app.use(authenticateJWT);
 
-// load our templating system -- we'll use Mozilla's nunjucks
-const nunjucks = require('nunjucks')
-nunjucks.configure('templates', {express: app})
-
 // routes
 app.use("/customers", customerRoutes);
 
