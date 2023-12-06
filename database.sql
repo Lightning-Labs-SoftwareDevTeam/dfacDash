@@ -4,7 +4,7 @@ CREATE TABLE customers (
     password text NOT NULL,
     fname text NOT NULL,
     lname text NOT NULL,
-    dodid integer NOT NULL CHECK (LENGTH(CAST(dodid AS TEXT)) = 10),
+    dodid bigint NOT NULL CHECK (LENGTH(CAST(dodid AS TEXT)) = 10),
     phnumber text,
     is_admin boolean NOT NULL DEFAULT FALSE,
     karma_score integer DEFAULT 3,
@@ -29,7 +29,7 @@ CREATE TABLE cooks (
     fname text NOT NULL,
     lname text NOT NULL,
     is_manager boolean NOT NULL DEFAULT FALSE
-)
+);
 
 CREATE TABLE items (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -39,7 +39,7 @@ CREATE TABLE items (
     price DECIMAL(5, 2) NOT NULL,
     meta_tag text,
     availability boolean NOT NULL DEFAULT TRUE
-)
+);
 
 CREATE TABLE orders (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -47,9 +47,9 @@ CREATE TABLE orders (
     dfac_id integer NOT NULL REFERENCES dfacs,
     price DECIMAL(5, 2) NOT NULL,
     comments text,
-    to_go boolean NOT NULL, DEFAULT TRUE,
-    timestamp datetime NOT NULL,
-    favorite boolean NOT NULL DEFAULT FALSE,
+    to_go boolean NOT NULL DEFAULT TRUE,
+    order_timestamp timestamp NOT NULL,
+    favorite boolean NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE order_items (
