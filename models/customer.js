@@ -81,7 +81,7 @@ class Customer {
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                 RETURNING username, fname AS "firstName", lname AS "lastName",
                 phnumber AS "phNumber", is_admin AS "isAdmin", karma_score AS "karmaScore",
-                email, profile_pic AS "profilePicURL`
+                email, profile_pic AS "profilePicURL"`,
             [
                 username,
                 hashedPassword,

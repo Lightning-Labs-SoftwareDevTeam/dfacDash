@@ -1,10 +1,18 @@
+-- drop all tables
+DROP TABLE IF EXISTS customers CASCADE;
+DROP TABLE IF EXISTS dfacs CASCADE;
+DROP TABLE IF EXISTS cooks CASCADE;
+DROP TABLE IF EXISTS items CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS order_items CASCADE;
+
 CREATE TABLE customers (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     username VARCHAR(25) UNIQUE NOT NULL,
     password text NOT NULL,
     fname text NOT NULL,
     lname text NOT NULL,
-    dodid bigint NOT NULL CHECK (LENGTH(CAST(dodid AS TEXT)) = 10),
+    dodid VARCHAR(10) NOT NULL CHECK (LENGTH(dodid) = 10),
     phnumber text,
     is_admin boolean NOT NULL DEFAULT FALSE,
     karma_score integer DEFAULT 3,
