@@ -25,7 +25,7 @@ class Customer {
             `SELECT username,
                     password,
                     fname AS "firstName",
-                    lname AS "lastName,
+                    lname AS "lastName",
                     dodid,
                     phnumber AS "phNumber",
                     is_admin AS "isAdmin",
@@ -42,6 +42,7 @@ class Customer {
         const isValid = await bcrypt.compare(password, customer.password);
         if (isValid === true) {
             delete customer.password;
+            delete customer.dodid;
             return customer;
         }
         //if bad password, throw Unauthorized error
@@ -81,7 +82,7 @@ class Customer {
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                 RETURNING username, fname AS "firstName", lname AS "lastName",
                 phnumber AS "phNumber", is_admin AS "isAdmin", karma_score AS "karmaScore",
-                email, profile_pic AS "profilePicURL`
+                email, profile_pic AS "profilePicURL"`,
             [
                 username,
                 hashedPassword,

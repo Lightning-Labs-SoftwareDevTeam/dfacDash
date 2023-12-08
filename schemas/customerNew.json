@@ -23,10 +23,10 @@
             "minLength": 1,
             "maxLength": 60
         },
-        "dodid:": {
-            "type": "integer",
-            "minimum": 10,
-            "maximum": 10
+        "dodid": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 10
         },
         "phNumber": {
             "type": "string",
