@@ -25,7 +25,7 @@ class Customer {
             `SELECT username,
                     password,
                     fname AS "firstName",
-                    lname AS "lastName,
+                    lname AS "lastName",
                     dodid,
                     phnumber AS "phNumber",
                     is_admin AS "isAdmin",
@@ -42,6 +42,7 @@ class Customer {
         const isValid = await bcrypt.compare(password, customer.password);
         if (isValid === true) {
             delete customer.password;
+            delete customer.dodid;
             return customer;
         }
         //if bad password, throw Unauthorized error
