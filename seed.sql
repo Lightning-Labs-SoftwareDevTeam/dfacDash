@@ -1,6 +1,6 @@
 INSERT INTO customers (username, password, fname, lname, dodid, phnumber, is_admin) VALUES 
-    ('customer1', 'password1', 'Sylvia', 'Plath', 1234567890, '808-080-8080', TRUE),
-    ('customer2', 'password2', 'Anne', 'Sexton', 9987654321, '917-123-4343', FALSE);
+    ('customer1', 'password1', 'Sylvia', 'Plath', '1234567890', '808-080-8080', TRUE),
+    ('customer2', 'password2', 'Anne', 'Sexton', '9987654321', '917-123-4343', FALSE);
 
 INSERT INTO dfacs (dfacname, dfacaddress, dfacphnumber) VALUES 
     ('Warrior Inn DFAC', 'Aleshire Ave, Schofield Barracks, HI 96857', '(808) 655-1062'),
