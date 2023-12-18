@@ -38,7 +38,8 @@ describe("POST /customers", () => {
                 phNumber: '(111) 111-1111',
                 isAdmin: false,
                 email: "test1@mail.com",
-                profilePicURL: "http://t1.img"
+                profilePicURL: "http://t1.img",
+                role: "customer"
             })
             .set("authorization", `Bearer ${a1Token}`);
         console.log("STATUS CODE~~~~~~~~~",resp.statusCode);
@@ -54,9 +55,11 @@ describe("POST /customers", () => {
                 isAdmin: false,
                 karmaScore: 3,
                 email: "test1@mail.com",
-                profilePicURL: "http://t1.img"
+                profilePicURL: "http://t1.img",
+                role: "customer"
             },
-            token: expect.any(String)
+            token: expect.any(String),
+
         });
     });
 });

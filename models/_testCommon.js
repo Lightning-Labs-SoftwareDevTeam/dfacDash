@@ -19,6 +19,7 @@ async function commonBeforeAll() {
     await db.query("DELETE FROM order_items");
 
     const c1Hash = await bcrypt.hash('password1', BCRYPT_WORK_FACTOR);
+    console.log(c1Hash);
     const c2Hash = await bcrypt.hash('password2', BCRYPT_WORK_FACTOR);
 
     await db.query(
@@ -50,3 +51,12 @@ module.exports = {
     commonAfterEach,
     commonAfterAll
 };
+
+/** Alternative way of exporting: prefix the definition! 
+ * export let name1, name2/*, … */; // also var
+// export const name1 = 1, name2 = 2/*, … */; // also var, let
+// export function functionName() { /* … */ }
+// export class ClassName { /* … */ }
+// export function* generatorFunctionName() { /* … */ }
+// export const { name1, name2: bar } = o;
+// export const [ name1, name2 ] = array; */

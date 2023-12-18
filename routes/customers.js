@@ -50,7 +50,7 @@ router.post("/", ensureLoggedIn, ensureAdmin, async (req, res, next) => {
  *                      isAdmin, karmaScore, email, profilePicURL}, {...}, ...] }
  * Requires login and admin rights
 * */
-router.get("/", ensureLoggedIn, ensureAdmin, async (req, res, next) => {
+router.get("/", ensureLoggedIn, async (req, res, next) => {
     try {
         const customers = await Customer.findAll();
 
