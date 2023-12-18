@@ -32,6 +32,7 @@ function authenticateJWT(req, res, next) {
 function ensureLoggedIn(req, res, next) {
     try {
         if (!res.locals.user) {
+            console.log(res);
             throw new UnauthorizedError();
         }
         return next();

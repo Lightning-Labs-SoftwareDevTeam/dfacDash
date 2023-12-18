@@ -25,13 +25,16 @@ describe("POST /auth/register", () => {
             .send({
                 username: 'new',
                 password: '12345six',
-                fname: 'Pat',
-                lname: 'Selmers',
+                firstName: 'Pat',
+                lastName: 'Selmers',
                 dodid: '9876543219',
-                phnumber: '(999) 999-1234',
-                is_admin: false,
-                email: 'newtest@mail.com'
+                phNumber: '(999) 999-1234',
+                isAdmin: false,
+                email: 'newtest@mail.com',
+                role: "customer"
             });
+
+        console.log(resp.body);
 
         expect(resp.statusCode).toEqual(201);
         expect(resp.body).toEqual({

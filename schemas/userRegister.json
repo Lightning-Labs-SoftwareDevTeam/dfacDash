@@ -63,6 +63,7 @@
         "firstName",
         "lastName",
         "dodid",
-        "phNumber"
+        "phNumber",
+        "role"
     ]
 }

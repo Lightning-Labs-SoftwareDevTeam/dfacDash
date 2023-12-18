@@ -10,6 +10,7 @@ const morgan = require("morgan");
 const { authenticateJWT } = require("./middleware/auth");
 const { NotFoundError } = require("./expressError");
 const customerRoutes = require("./routes/customers");
+const authRoutes = require("./routes/auth");
 
 // Middleware
 app.use(express.json());
@@ -19,6 +20,7 @@ app.use(authenticateJWT);
 
 // routes
 app.use("/customers", customerRoutes);
+app.use("/auth", authRoutes);
 
 // Handle most errors with 404
 app.use((req, res, next) => {
