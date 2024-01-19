@@ -13,11 +13,14 @@ CREATE TABLE customers (
     fname text NOT NULL,
     lname text NOT NULL,
     dodid VARCHAR(10) NOT NULL CHECK (LENGTH(dodid) = 10),
-    phnumber text,
+    phone_number text,
     is_admin boolean NOT NULL DEFAULT FALSE,
     karma_score integer DEFAULT 3,
     email text CHECK (position('@' IN email) > 1),
-    profile_pic text
+    profile_pic text,
+    created_at timestamp NOT NULL,
+    updated_at timestamp,
+    deleted_at timestamp
 );
 
 CREATE TABLE dfacs (
