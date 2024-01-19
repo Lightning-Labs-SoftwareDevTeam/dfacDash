@@ -16,7 +16,7 @@ CREATE TABLE customers (
     phone_number text,
     is_admin boolean NOT NULL DEFAULT FALSE,
     karma_score integer DEFAULT 3,
-    email text CHECK (position('@' IN email) > 1),
+    email text CHECK (email IS NULL OR (position('@' IN email) > 1)),
     profile_pic text,
     created_at timestamp NOT NULL,
     updated_at timestamp,
@@ -27,19 +27,46 @@ CREATE TABLE dfacs (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     dfacname text NOT NULL,
     dfac_logo text,
-    dfacaddress text NOT NULL,
-    dfacphnumber text,
-    rating DECIMAL(2,1),
-    hours text
+    street_address text NOT NULL,
+    bldg_num text,
+    city text NOT NULL,
+    state_abb text NOT NULL,
+    zip_code integer NOT NULL,
+    dfac_phnumber text,
+    flash_msg1 text,
+    flash_msg2 text,
+    bf_hours text,
+    lu_hours text,
+    dn_hours text,
+    bch_hours text,
+    sup_hours text,
+    order_timebf text,
+    order_timelu text,
+    order_timedn text,
+    order_timebch text,
+    order_timesup text,
+    created_at timestamp NOT NULL,
+    updated_at timestamp,
+    deleted_at timestamp
 );
 
 CREATE TABLE cooks (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     username VARCHAR(25) UNIQUE NOT NULL,
     password text NOT NULL,
+    rank text,
     fname text NOT NULL,
     lname text NOT NULL,
-    is_manager boolean NOT NULL DEFAULT FALSE
+    dodid VARCHAR(10) NOT NULL CHECK (LENGTH(dodid) = 10),
+    email text CHECK (email IS NULL OR (position('@' IN email) > 1)),
+    profile_pic text,
+    is_manager boolean NOT NULL DEFAULT FALSE,
+    update_menu boolean NOT NULL DEFAULT FALSE,
+    update_hours boolean NOT NULL DEFAULT FALSE,
+    update_meals boolean NOT NULL DEFAULT FALSE,
+    created_at timestamp NOT NULL,
+    updated_at timestamp,
+    deleted_at timestamp
 );
 
 CREATE TABLE items (
