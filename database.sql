@@ -16,7 +16,7 @@ CREATE TABLE customers (
     phone_number text,
     is_admin boolean NOT NULL DEFAULT FALSE,
     karma_score integer DEFAULT 3,
-    email text CHECK (position('@' IN email) > 1),
+    email text CHECK (email IS NULL OR (position('@' IN email) > 1)),
     profile_pic text,
     created_at timestamp NOT NULL,
     updated_at timestamp,
@@ -54,9 +54,19 @@ CREATE TABLE cooks (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     username VARCHAR(25) UNIQUE NOT NULL,
     password text NOT NULL,
+    rank text,
     fname text NOT NULL,
     lname text NOT NULL,
-    is_manager boolean NOT NULL DEFAULT FALSE
+    dodid VARCHAR(10) NOT NULL CHECK (LENGTH(dodid) = 10),
+    email text CHECK (email IS NULL OR (position('@' IN email) > 1)),
+    profile_pic text,
+    is_manager boolean NOT NULL DEFAULT FALSE,
+    update_menu boolean NOT NULL DEFAULT FALSE,
+    update_hours boolean NOT NULL DEFAULT FALSE,
+    update_meals boolean NOT NULL DEFAULT FALSE,
+    created_at timestamp NOT NULL,
+    updated_at timestamp,
+    deleted_at timestamp
 );
 
 CREATE TABLE items (
