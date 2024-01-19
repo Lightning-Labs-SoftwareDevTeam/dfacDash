@@ -30,6 +30,12 @@ async function commonBeforeAll() {
             'https://media.istockphoto.com/id/867753888/vector/saxophone-flat-icon-music-and-instrument-jazz-sign-vector-graphics-a-coloful-solid-pattern-on.jpg?s=612x612&w=0&k=20&c=pJ8L3piYl3bNpA_RdePKLllXjzCUpJX3V871i7H_mDY=')`,
         [c1Hash, c2Hash]
     );
+
+    await db.query(
+        `INSERT INTO dfacs (id, dfacname, dfac_logo, dfacaddress, dfacphnumber, rating, hours)
+            VALUES ('dfac1', 'https://media.defense.gov/2016/Oct/04/2001643776/-1/-1/0/161004-F-XX000-003.JPG',
+            '123 Food Court)`
+    )
 };
 
 async function commonBeforeEach() {
