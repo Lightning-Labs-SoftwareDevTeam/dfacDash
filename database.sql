@@ -27,10 +27,27 @@ CREATE TABLE dfacs (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     dfacname text NOT NULL,
     dfac_logo text,
-    dfacaddress text NOT NULL,
-    dfacphnumber text,
-    rating DECIMAL(2,1),
-    hours text
+    street_address text NOT NULL,
+    bldg_num text,
+    city text NOT NULL,
+    state_abb text NOT NULL,
+    zip_code integer NOT NULL,
+    dfac_phnumber text,
+    flash_msg1 text,
+    flash_msg2 text,
+    bf_hours text,
+    lu_hours text,
+    dn_hours text,
+    bch_hours text,
+    sup_hours text,
+    order_timebf text,
+    order_timelu text,
+    order_timedn text,
+    order_timebch text,
+    order_timesup text,
+    created_at timestamp NOT NULL,
+    updated_at timestamp,
+    deleted_at timestamp
 );
 
 CREATE TABLE cooks (
