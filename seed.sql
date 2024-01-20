@@ -1,11 +1,12 @@
 INSERT INTO customers (username, password, fname, lname, dodid, phone_number, meal_card, is_admin, karma_score, email, profile_pic) VALUES 
     ('customer1', 'password1', 'Sylvia', 'Plath', '1234567890', '808-080-8080', TRUE, FALSE, 10, splath@fake.com, NULL),
-    ('customer2', 'password2', 'Anne', 'Sexton', '9987654321', '917-123-4343', FALSE, TRUE, 20, asexton@fake.com, https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png);
-    ('customer3', 'password3', 'Bilbo', 'Baggins', '99998877777', '808-123-5533', TRUE, FALSE, 15, baggins@fake.com, https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png);
-    ('customer4', 'password4', 'Arthur', 'Pendragon', '1111155555', '213-321-4321', TRUE, FALSE, 20, kingart@fake.com, https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png);
+    ('customer2', 'password2', 'Anne', 'Sexton', '9987654321', '917-123-4343', FALSE, TRUE, 20, asexton@fake.com, https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png),
+    ('customer3', 'password3', 'Bilbo', 'Baggins', '99998877777', '808-123-5533', TRUE, FALSE, 15, baggins@fake.com, https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png),
+    ('customer4', 'password4', 'Arthur', 'Pendragon', '1111155555', '213-321-4321', TRUE, FALSE, 20, kingart@fake.com, https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png),
     ('customer5', 'password5', 'Auntie', 'Ursula', '12345654321', '808-999-5678', FALSE, FALSE, 5, ursula@fake.com, https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png);
 
-INSERT INTO dfacs (dfacname, dfacaddress, dfacphnumber) VALUES 
+INSERT INTO dfacs (dfac_name, dfac_logo, street_address, bldg_num, city, state_abb, zip_code, dfac_phnumber, flash_msg1, flash_msg2, bf_hours,
+    lu_hours, dn_hours, bch_hours, sup_hours, order_timebf, order_timelu, order_timedn, order_timebch, order_timesup) VALUES 
     ('Warrior Inn DFAC', 'Aleshire Ave, Schofield Barracks, HI 96857', '(808) 655-1062'),
     ('Sustainment Bistro', '780 Menoher Rd, Schofield Barracks, HI 96857', '(808) 753-2842');
 
