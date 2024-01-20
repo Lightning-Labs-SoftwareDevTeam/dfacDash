@@ -192,3 +192,9 @@ CREATE TABLE surrogates (
     FOREIGN KEY (meal_id) REFERENCES meals(id),
     UNIQUE (order_id, surrogate_id)
 );
+
+-- Minimal indexing for optimizing performance on common queries
+CREATE INDEX idx_customer_id ON orders(customer_id);
+CREATE INDEX idx_meal_id ON meal_items(meal_id);
+CREATE INDEX idx_item_id ON item_tags(item_id);
+CREATE INDEX idx_surrogate_id ON surrogates(surrogate_id);
