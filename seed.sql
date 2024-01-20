@@ -14,9 +14,17 @@ INSERT INTO dfacs (dfac_name, dfac_logo, street_address, bldg_num, city, state_a
      '1129 Wright Ave', 'Bldg. 102', 'Wheeler Army Airfield', 'HI', 96854, '(808) 656-2504', 'Welcome to the Award-Winning Wings of Lightning Warrior Restaurant!', 'Special romantic dinner menu planned for February 2024...stay tuned!',
      '0730 - 0900', '1130 -1300', '1700-1830', '0930 - 1230', '1630 - 1800', '0600 - 0830', '0930 - 1230', '1500 - 1800', '0900 - 1200', '1500 - 1730');
 
-INSERT INTO cooks (username, password, fname, lname, is_manager) VALUES
+INSERT INTO cooks (dfac_id, username, password, rank, fname, lname, dodid, email, profile_pic, email, is_admin, is_manager, update_menu, update_hours, update_meals) VALUES
     ('cook1', 'password3', 'Martin', 'Weteschnik', FALSE),
     ('cook2', 'password4', 'Blaine', 'Tibshirani', TRUE);
+
+    email text CHECK (email IS NULL OR (position('@' IN email) > 1)),
+    profile_pic text,
+    is_admin boolean NOT NULL DEFAULT FALSE,
+    is_manager boolean NOT NULL DEFAULT FALSE,
+    update_menu boolean NOT NULL DEFAULT FALSE,
+    update_hours boolean NOT NULL DEFAULT FALSE,
+    update_meals boolean NOT NULL DEFAULT FALSE,
 
 INSERT INTO items (dfac_id, menu_item, description, price, meta_tag, availability) VALUES
     (1, 'Pizza', 'Pick your toppings: pepperoni, sausage, onions, mushrooms', 4.50, 'fan-favorite', TRUE),

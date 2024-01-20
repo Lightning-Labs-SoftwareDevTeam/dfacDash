@@ -60,6 +60,7 @@ CREATE TABLE dfacs (
 
 CREATE TABLE cooks (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    dfac_id integer REFERENCES dfacs(id),
     username VARCHAR(25) UNIQUE NOT NULL,
     password text NOT NULL,
     rank text,
