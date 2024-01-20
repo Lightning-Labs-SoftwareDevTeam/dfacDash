@@ -3,8 +3,9 @@ DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS dfacs CASCADE;
 DROP TABLE IF EXISTS cooks CASCADE;
 DROP TABLE IF EXISTS meals CASCADE;
-DROP TABLE IF EXISTS meal_items CASCADE;
 DROP TABLE IF EXISTS items CASCADE;
+DROP TABLE IF EXISTS meal_items CASCADE;
+DROP TABLE IF EXISTS customer_likes CASCADE;
 DROP TABLE IF EXISTS tags CASCADE;
 DROP TABLE IF EXISTS nutrition CASCADE;
 DROP TABLE IF EXISTS item_tags CASCADE;
@@ -66,6 +67,7 @@ CREATE TABLE cooks (
     dodid VARCHAR(10) NOT NULL CHECK (LENGTH(dodid) = 10),
     email text CHECK (email IS NULL OR (position('@' IN email) > 1)),
     profile_pic text,
+    is_admin boolean NOT NULL DEFAULT FALSE,
     is_manager boolean NOT NULL DEFAULT FALSE,
     update_menu boolean NOT NULL DEFAULT FALSE,
     update_hours boolean NOT NULL DEFAULT FALSE,
@@ -80,6 +82,8 @@ CREATE TABLE meals (
     meal_name text,
     description text,
     type text,
+    img_pic text,
+    likes integer DEFAULT 0,
     created_at timestamp NOT NULL,
     updated_at timestamp,
     deleted_at timestamp
@@ -91,6 +95,7 @@ CREATE TABLE items (
     food_type text NOT NULL,
     recipe_code text,
     description text NOT NULL,
+    likes integer DEFAULT 0,
     color_code text,
     sodium_level text,
     da_standard text   
@@ -108,6 +113,19 @@ CREATE TABLE meal_items (
     PRIMARY KEY (meal_id, item_id),
     CONSTRAINT fk_meal FOREIGN KEY (meal_id) REFERENCES meals(id),
     CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES items(id)
+);
+
+-- Tracks customer likes and prevents a single customer liking the same thing multiple times
+CREATE TABLE customer_likes (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    customer_id integer NOT NULL,
+    meal_id integer,
+    item_id integer,
+    liked_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id),
+    FOREIGN KEY (meal_id) REFERENCES meals(id),
+    FOREIGN KEY (item_id) REFERENCES items(id),
+    UNIQUE (customer_id, meal_id, item_id)
 );
 
 CREATE TABLE tags (
