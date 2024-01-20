@@ -5,12 +5,13 @@ DROP TABLE IF EXISTS cooks CASCADE;
 DROP TABLE IF EXISTS meals CASCADE;
 DROP TABLE IF EXISTS items CASCADE;
 DROP TABLE IF EXISTS meal_items CASCADE;
-DROP TABLE IF EXISTS customer_likes CASCADE;
 DROP TABLE IF EXISTS tags CASCADE;
 DROP TABLE IF EXISTS nutrition CASCADE;
 DROP TABLE IF EXISTS item_tags CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS order_items CASCADE;
+DROP TABLE IF EXISTS customer_likes CASCADE;
+DROP TABLE IF EXISTS surrogates CASCADE;
 
 CREATE TABLE customers (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -115,19 +116,6 @@ CREATE TABLE meal_items (
     CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES items(id)
 );
 
--- Tracks customer likes and prevents a single customer liking the same thing multiple times
-CREATE TABLE customer_likes (
-    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    customer_id integer NOT NULL,
-    meal_id integer,
-    item_id integer,
-    liked_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (customer_id) REFERENCES customers(id),
-    FOREIGN KEY (meal_id) REFERENCES meals(id),
-    FOREIGN KEY (item_id) REFERENCES items(id),
-    UNIQUE (customer_id, meal_id, item_id)
-);
-
 CREATE TABLE tags (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     dietary text,
@@ -167,12 +155,40 @@ CREATE TABLE orders (
     favorite boolean NOT NULL DEFAULT FALSE
 );
 
+-- Intermediate table between orders and meals
 CREATE TABLE order_items (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     order_id integer NOT NULL REFERENCES orders(id),
-    item_id integer NOT NULL REFERENCES items(id),
+    meal_id integer NOT NULL REFERENCES meals(id),
     quantity integer NOT NULL,
     special_instructions text,
     CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES orders(id),
-    CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES items(id)
+    CONSTRAINT fk_meal FOREIGN KEY (meal_id) REFERENCES meals(id)
+);
+
+-- Tracks customer likes and prevents a single customer liking the same thing multiple times
+CREATE TABLE customer_likes (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    customer_id integer NOT NULL,
+    meal_id integer,
+    item_id integer,
+    liked_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id),
+    FOREIGN KEY (meal_id) REFERENCES meals(id),
+    FOREIGN KEY (item_id) REFERENCES items(id),
+    UNIQUE (customer_id, meal_id, item_id)
+);
+
+-- Table enabling a customer to order food for another person
+CREATE TABLE surrogates (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    order_id integer NOT NULL,
+    customer_id integer NOT NULL,
+    surrogate_id text NOT NULL,
+    meal_id integer NOT NULL,
+    authorization_doc text, --references required paperwork
+    FOREIGN KEY (order_id) REFERENCES orders(id),
+    FOREIGN KEY (customer_id) REFERENCES customers(id),
+    FOREIGN KEY (meal_id) REFERENCES meals(id),
+    UNIQUE (order_id, surrogate_id)
 );
