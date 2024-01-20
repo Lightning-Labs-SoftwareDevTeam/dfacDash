@@ -26,14 +26,14 @@ CREATE TABLE customers (
     karma_score integer DEFAULT 3,
     email text CHECK (email IS NULL OR (position('@' IN email) > 1)),
     profile_pic text,
-    created_at timestamp NOT NULL,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp,
     deleted_at timestamp
 );
 
 CREATE TABLE dfacs (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    dfacname text NOT NULL,
+    dfac_name text NOT NULL,
     dfac_logo text,
     street_address text NOT NULL,
     bldg_num text,
@@ -53,7 +53,7 @@ CREATE TABLE dfacs (
     order_timedn text,
     order_timebch text,
     order_timesup text,
-    created_at timestamp NOT NULL,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp,
     deleted_at timestamp
 );
@@ -73,7 +73,7 @@ CREATE TABLE cooks (
     update_menu boolean NOT NULL DEFAULT FALSE,
     update_hours boolean NOT NULL DEFAULT FALSE,
     update_meals boolean NOT NULL DEFAULT FALSE,
-    created_at timestamp NOT NULL,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp,
     deleted_at timestamp
 );
@@ -85,7 +85,7 @@ CREATE TABLE meals (
     type text,
     img_pic text,
     likes integer DEFAULT 0,
-    created_at timestamp NOT NULL,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp,
     deleted_at timestamp
 );
@@ -151,7 +151,7 @@ CREATE TABLE orders (
     price DECIMAL(5, 2) NOT NULL,
     comments text,
     to_go boolean NOT NULL DEFAULT TRUE,
-    order_timestamp timestamp NOT NULL,
+    order_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     favorite boolean NOT NULL DEFAULT FALSE
 );
 
