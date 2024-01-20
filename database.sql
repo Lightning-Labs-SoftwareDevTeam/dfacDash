@@ -2,6 +2,8 @@
 DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS dfacs CASCADE;
 DROP TABLE IF EXISTS cooks CASCADE;
+DROP TABLE IF EXISTS meals CASCADE;
+DROP TABLE IF EXISTS meal_items CASCADE;
 DROP TABLE IF EXISTS items CASCADE;
 DROP TABLE IF EXISTS tags CASCADE;
 DROP TABLE IF EXISTS nutrition CASCADE;
@@ -73,6 +75,16 @@ CREATE TABLE cooks (
     deleted_at timestamp
 );
 
+CREATE TABLE meals (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    meal_name text,
+    description text,
+    type text,
+    created_at timestamp NOT NULL,
+    updated_at timestamp,
+    deleted_at timestamp
+);
+
 CREATE TABLE items (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     menu_item text NOT NULL,
@@ -82,6 +94,20 @@ CREATE TABLE items (
     color_code text,
     sodium_level text,
     da_standard text   
+);
+
+-- Intermediate table between meals and items, addressing the many-to-many relationship.
+-- A meal consists of multiple items, and an item can be a part of multiple meals.
+-- The PRIMARY KEY ensures that each row of meal-to-item combination is unique.
+-- Foreign key constraints ensure that the meals or items in the junction table also
+-- exist in the `meals` or `items` tables, respectively.
+CREATE TABLE meal_items (
+    meal_id integer,
+    item_id integer,
+    quantity integer,
+    PRIMARY KEY (meal_id, item_id),
+    CONSTRAINT fk_meal FOREIGN KEY (meal_id) REFERENCES meals(id),
+    CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES items(id)
 );
 
 CREATE TABLE tags (
