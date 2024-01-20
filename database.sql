@@ -3,6 +3,9 @@ DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS dfacs CASCADE;
 DROP TABLE IF EXISTS cooks CASCADE;
 DROP TABLE IF EXISTS items CASCADE;
+DROP TABLE IF EXISTS tags CASCADE;
+DROP TABLE IF EXISTS nutrition CASCADE;
+DROP TABLE IF EXISTS item_tags CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS order_items CASCADE;
 
@@ -14,6 +17,7 @@ CREATE TABLE customers (
     lname text NOT NULL,
     dodid VARCHAR(10) NOT NULL CHECK (LENGTH(dodid) = 10),
     phone_number text,
+    meal_card boolean NOT NULL DEFAULT TRUE,
     is_admin boolean NOT NULL DEFAULT FALSE,
     karma_score integer DEFAULT 3,
     email text CHECK (email IS NULL OR (position('@' IN email) > 1)),
@@ -71,12 +75,41 @@ CREATE TABLE cooks (
 
 CREATE TABLE items (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    dfac_id integer NOT NULL REFERENCES dfacs(id),
     menu_item text NOT NULL,
+    food_type text NOT NULL,
+    recipe_code text,
     description text NOT NULL,
-    price DECIMAL(5, 2) NOT NULL,
-    meta_tag text,
-    availability boolean NOT NULL DEFAULT TRUE
+    color_code text,
+    sodium_level text,
+    da_standard text   
+);
+
+CREATE TABLE tags (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    dietary text,
+    allergen text,
+    promotional text,
+    descriptive text,
+    availability boolean NOT NULL DEFAULT TRUE,
+    img_pic text
+);
+
+CREATE TABLE nutrition (
+    menu_item_id integer REFERENCES items(id),
+    calories text,
+    protein text,
+    carbs text,
+    fat text,
+    sodium text,
+    cholesterol text,
+    sugars text
+);
+
+-- Intermediate table between items and tags
+CREATE TABLE item_tags (
+    item_id integer REFERENCES items(id),
+    tag_id integer REFERENCES tags(id),
+    PRIMARY KEY (item_id, tag_id)
 );
 
 CREATE TABLE orders (
