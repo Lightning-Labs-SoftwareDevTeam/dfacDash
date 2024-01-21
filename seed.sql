@@ -27,7 +27,7 @@ INSERT INTO cooks (dfac_id, username, password, rank, fname, lname, dodid, email
      (2, 'cook22', 'passwordCook22', 'SPC', 'Helen', 'Roback', '4321979797', 'hshall@fake.mail', 'https://cdn-icons-png.flaticon.com/512/7414/7414124.png', FALSE, FALSE, FALSE, TRUE, FALSE),
      (2, 'cook23', 'passwordCook23', 'SPC', 'Moses', 'Layfield', '9797555797', 'mshall@fake.mail', 'https://cdn-icons-png.flaticon.com/512/7414/7414124.png', FALSE, FALSE, FALSE, FALSE, TRUE);
 
-INSERT INTO items(menu_item, food_type, recipe_code, description, color_code, sodium_level) VALUES
+INSERT INTO items (menu_item, food_type, recipe_code, description, color_code, sodium_level) VALUES
     ('BACON 3PC', 'PROTEIN', 'L-002-00', 'EVERYDAY MENU', 'RED', 'MODERATE'),
     ('TURKEY LINKS 2LINKS', 'PROTEIN', 'L-200-01', 'MONDAY MENU 1', 'RED', 'LOW'),
     ('CREAMED BEEF 5.25OZ', 'GRAVY', 'L-030-00', 'MONDAY MENU 1', 'YELLOW', 'MODERATE'),
@@ -137,3 +137,13 @@ INSERT INTO items(menu_item, food_type, recipe_code, description, color_code, so
     ('GINGER GLAZED CARROTS 4.25OZ', 'VEG', 'Q-017-01', 'SATURDAY MENU 6', 'YELLOW', 'MODERATE'),
     ('ITALIAN MEATBALLS 3.75OZ', 'PROTEIN', 'L-353-02', 'SATURDAY MENU 6', 'YELLOW', 'MODERATE'),
     ('PARMESAN FISH 5OZ', 'PROTEIN', 'L-032-51', 'SATURDAY MENU 6', 'YELLOW', 'MODERATE'),
+
+    ('BAKED HAM CARVED 4OZ', 'PROTEIN', 'L-069-00', 'SUNDAY MENU 7', 'YELLOW', 'MODERATE'),
+    ('ROASTED BRUSSEL SPROUTS 3.25OZ', 'VEG', 'Q-106-50', 'SUNDAY MENU 7', 'GREEN', 'MODERATE'),
+    ('ROASTED CARROTS 4.75OZ', 'VEG', '1-108-52', 'SUNDAY MENU 7', 'GREEN', 'MODERATE'),
+    ('SALISBURY STEAK 1PC', 'PROTEIN', 'L-037-00', 'SUNDAY MENU 7', 'RED', 'HIGH'),
+    ('SZECHWAN CHICKEN BREAST 1PC', 'PROTEIN', 'L-159-51', 'SUNDAY MENU 7', 'YELLOW', 'MODERATE'),
+    ('CAJUN BAKED FISH 4OZ', 'PROTEIN', 'L-119-53', 'SUNDAY MENU 7', 'GREEN', 'MODERATE'),
+    ('RED BEANS & RICE 8OZ', 'STARCH', 'E-010-00', 'SUNDAY MENU 7', 'YELLOW', 'HIGH'),
+    ('CALICO CORN 4OZ', 'VEG', 'Q-027-00', 'SUNDAY MENU 7', 'YELLOW', 'LOW'),
+    ('PEAS 4OZ', 'VEG', 'Q-016-01', 'SUNDAY MENU 7', 'GREEN', 'LOW'),
