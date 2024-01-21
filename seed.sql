@@ -282,3 +282,23 @@ INSERT INTO nutrition (menu_item_id, calories, protein, carbs, fat) VALUES
     ((SELECT id FROM items WHERE menu_item = 'BLACKENED CATFISH 6OZ'), '283', '30g', '4.6g', '16.4g'),
     ((SELECT id FROM items WHERE menu_item = 'BAKED MACARONI & CHEESE 12.75OZ'), '651', '35.9g', '65.3g', '26.1g'),
     ((SELECT id FROM items WHERE menu_item = 'COLLARD GREENS 4OZ'), '43', '3.6g', '7.5g', '1g');
+
+INSERT INTO orders (customer_id, dfac_id, comments) VALUES
+    ((SELECT id FROM customers WHERE username = 'customer1'), 1, NULL),
+    ((SELECT id FROM customers WHERE username = 'customer2'), 1, 'Sprite please'),
+    ((SELECT id FROM customers WHERE username = 'customer3'), 2, 'Picking up food for me and my team'),
+    ((SELECT id FROM customers WHERE username = 'customer4'), 2, 'Pick-up by Bilbo Baggins for Arthur Pendragon'),
+    ((SELECT id FROM customers WHERE username = 'customer5'), 2, 'Pick-up by Bilbo Baggins for Auntie Ursula');
+
+INSERT INTO order_meals (order_id, meal_id, quantity, special_instructions) VALUES
+    ((SELECT id FROM orders WHERE dfac_id = 1 AND comments IS NULL), (SELECT id FROM meals WHERE meal_name = 'BK #1' AND dfac_id = 1), 1, NULL),
+    ((SELECT id FROM orders WHERE dfac_id = 1 AND comments = 'Sprite please'), (SELECT id FROM meals WHERE meal_name = 'Lunch #1' AND dfac_id = 1), 1, 'Thank you so much!'),
+    ((SELECT id FROM orders WHERE dfac_id = 2 AND comments = 'Picking up food for me and my team'), (SELECT id FROM meals WHERE meal_name = 'Lunch #1' AND dfac_id = 2), 1, 'Could I get cherry coke with my meal?'),
+    ((SELECT id FROM orders WHERE dfac_id = 2 AND comments = 'Pick-up by Bilbo Baggins for Arthur Pendragon'), (SELECT id FROM meals WHERE meal_name = 'Lunch #2' AND dfac_id = 2), 1, NULL),
+    ((SELECT id FROM orders WHERE dfac_id = 2 AND comments = 'Pick-up by Bilbo Baggins for Auntie Ursula'), (SELECT id FROM meals WHERE meal_name = 'Lunch #2' AND dfac_id = 2), 1, NULL);
+
+INSERT INTO surrogates (order_id, customer_id, surrogate_id, meal_id, authorization_doc) VALUES
+    ((SELECT id FROM orders WHERE dfac_id = 2 AND comments = 'Pick-up by Bilbo Baggins for Arthur Pendragon'), (SELECT id FROM customers WHERE username = 'customer4'), (SELECT id FROM customers WHERE username = 'customer3'),
+        (SELECT id FROM meals WHERE meal_name = 'Lunch #2' AND dfac_id = 2), 'SignedAuthorization.pdf'),
+    ((SELECT id FROM orders WHERE dfac_id = 2 AND comments = 'Pick-up by Bilbo Baggins for Auntie Ursula'), (SELECT id FROM customers WHERE username = 'customer5'), (SELECT id FROM customers WHERE username = 'customer3'),
+        (SELECT id FROM meals WHERE meal_name = 'Lunch #2' AND dfac_id = 2), 'SignedAuthorization.pdf');
