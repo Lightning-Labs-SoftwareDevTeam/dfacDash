@@ -6,12 +6,12 @@ DROP TABLE IF EXISTS items CASCADE;
 DROP TABLE IF EXISTS meals CASCADE;
 DROP TABLE IF EXISTS meal_items CASCADE;
 DROP TABLE IF EXISTS nutrition CASCADE;
-DROP TABLE IF EXISTS tags CASCADE;
-DROP TABLE IF EXISTS item_tags CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS order_meals CASCADE;
-DROP TABLE IF EXISTS customer_likes CASCADE;
 DROP TABLE IF EXISTS surrogates CASCADE;
+DROP TABLE IF EXISTS tags CASCADE;
+DROP TABLE IF EXISTS item_tags CASCADE;
+DROP TABLE IF EXISTS customer_likes CASCADE;
 
 CREATE TABLE customers (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -130,6 +130,42 @@ CREATE TABLE nutrition (
     sugars text
 );
 
+CREATE TABLE orders (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    customer_id integer NOT NULL REFERENCES customers,
+    dfac_id integer NOT NULL REFERENCES dfacs,
+    comments text,
+    to_go boolean NOT NULL DEFAULT TRUE,
+    order_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    favorite boolean NOT NULL DEFAULT FALSE
+);
+
+-- Intermediate table between orders and meals
+CREATE TABLE order_meals (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    order_id integer NOT NULL REFERENCES orders(id),
+    meal_id integer NOT NULL REFERENCES meals(id),
+    quantity integer NOT NULL,
+    price_at_order DECIMAL(5, 2) NOT NULL, --Populated with the meal price from time of order
+    special_instructions text,
+    CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES orders(id),
+    CONSTRAINT fk_meal FOREIGN KEY (meal_id) REFERENCES meals(id)
+);
+
+-- Table enabling a customer to order food for another person
+CREATE TABLE surrogates (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    order_id integer NOT NULL,
+    customer_id integer NOT NULL,
+    surrogate_id text NOT NULL,
+    meal_id integer NOT NULL,
+    authorization_doc text, --references required paperwork
+    FOREIGN KEY (order_id) REFERENCES orders(id),
+    FOREIGN KEY (customer_id) REFERENCES customers(id),
+    FOREIGN KEY (meal_id) REFERENCES meals(id),
+    UNIQUE (order_id, surrogate_id)
+);
+
 CREATE TABLE tags (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     dietary text,
@@ -147,28 +183,6 @@ CREATE TABLE item_tags (
     PRIMARY KEY (item_id, tag_id)
 );
 
-CREATE TABLE orders (
-    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    customer_id integer NOT NULL REFERENCES customers,
-    dfac_id integer NOT NULL REFERENCES dfacs,
-    price DECIMAL(5, 2) NOT NULL,
-    comments text,
-    to_go boolean NOT NULL DEFAULT TRUE,
-    order_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    favorite boolean NOT NULL DEFAULT FALSE
-);
-
--- Intermediate table between orders and meals
-CREATE TABLE order_meals (
-    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    order_id integer NOT NULL REFERENCES orders(id),
-    meal_id integer NOT NULL REFERENCES meals(id),
-    quantity integer NOT NULL,
-    special_instructions text,
-    CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES orders(id),
-    CONSTRAINT fk_meal FOREIGN KEY (meal_id) REFERENCES meals(id)
-);
-
 -- Tracks customer likes and prevents a single customer liking the same thing multiple times
 CREATE TABLE customer_likes (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -182,22 +196,23 @@ CREATE TABLE customer_likes (
     UNIQUE (customer_id, meal_id, item_id)
 );
 
--- Table enabling a customer to order food for another person
-CREATE TABLE surrogates (
-    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    order_id integer NOT NULL,
-    customer_id integer NOT NULL,
-    surrogate_id text NOT NULL,
-    meal_id integer NOT NULL,
-    authorization_doc text, --references required paperwork
-    FOREIGN KEY (order_id) REFERENCES orders(id),
-    FOREIGN KEY (customer_id) REFERENCES customers(id),
-    FOREIGN KEY (meal_id) REFERENCES meals(id),
-    UNIQUE (order_id, surrogate_id)
-);
-
 -- Minimal indexing for optimizing performance on common queries
 CREATE INDEX idx_customer_id ON orders(customer_id);
+CREATE INDEX idx_order_id ON order_meals(order_id);
 CREATE INDEX idx_meal_id ON meal_items(meal_id);
-CREATE INDEX idx_item_id ON item_tags(item_id);
 CREATE INDEX idx_surrogate_id ON surrogates(surrogate_id);
+CREATE INDEX idx_item_id ON item_tags(item_id);
+
+-- Trigger function for recording historical price data
+CREATE OR REPLACE FUNCTION update_price_at_order()
+    RETURNS TRIGGER AS $$
+    BEGIN
+        NEW.price_at_order := (SELECT price FROM meals WHERE id = NEW.meal_id);
+        RETURN NEW;
+    END;
+    $$ LANGUAGE plpgsql;
+-- Call the trigger with every new row inserted into `order_meals`
+CREATE TRIGGER set_price_at_order
+    BEFORE INSERT ON order_meals
+    FOR EACH ROW
+    EXECUTE FUNCTION update_price_at_order();
