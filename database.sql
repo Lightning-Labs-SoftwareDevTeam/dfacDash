@@ -93,9 +93,11 @@ CREATE TABLE items (
 
 CREATE TABLE meals (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    dfac_id integer NOT NULL REFERENCES dfacs(id),
     meal_name text,
     description text,
     type text,
+    price DECIMAL(5, 2) NOT NULL,
     img_pic text,
     likes integer DEFAULT 0,
     created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

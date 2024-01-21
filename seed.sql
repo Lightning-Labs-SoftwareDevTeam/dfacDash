@@ -149,3 +149,16 @@ INSERT INTO items (menu_item, food_type, recipe_code, description, color_code, s
     ('SODA FOUNTAIN', 'BAR', NULL, 'BEVERAGE', 'RED', 'MODERATE'),
     ('ICED TEA', 'BAR', NULL, 'BEVERAGE', 'WHITE', NULL),
     ('WATER', 'BAR', NULL, 'BEVERAGE', 'WHITE', NULL);
+
+INSERT INTO meals (dfac_id, meal_name, description, type, price, img_pic) VALUES
+    (1, 'BK #1', 'Bacon and scrambled eggs with home fried potatoes and coffee', 'breakfast', 4.30, 'https://www.sheknows.com/wp-content/uploads/2018/08/eggs_and_bacon_n8mwmd.jpeg'),
+    (1, 'The Tuesday Breakfast', 'Sausage patties with gravy, oatmeal, spinach, and orange juice', 'breakfast', 4.30, 'https://www.onegreenplanet.org/wp-content/uploads/2019/09/d-4.jpg'),
+    (1, 'Lunch #1', 'Mexican chicken breast and spanish rice with roasted zucchini and fountain beverage', 'lunch', 6.85, 'https://www.101cookingfortwo.com/wp-content/uploads/2013/09/chicken-and-rice-on-white-plate-480x270.jpg'),
+    (1, 'Lunch #2', 'Teriyaki beef & broccoli with mashed potatoes, peas, and carrots. Includes garlic buttered hot rolls and iced tea.', 'lunch', 6.85, 'https://images.everyplate.com/f_auto,fl_lossy,q_auto/everyplate_s3/image/5c893f82e3f3391b22374102-a3175a68.jpg'),
+    (1, 'Dinner #1', 'Spaghetti and corn oBrien with hot rolls and minestrone soup. Choice of beverage.', 'dinner', 5.85, 'https://www.thisisnotdietfood.com/wp-content/uploads/2022/11/onepotspaghetti-02square-735x735.jpg'),
+    (1, 'Dinner #2', 'Savory baked chicken breast with pan gravy, brown rice, and mixed vegetables. Choice of drink', 'dinner', 5.85, 'https://mojo.generalmills.com/api/public/content/JV75T_2jNkaFViEwLeo4ow_gmi_hi_res_jpeg.jpeg?v=fcaedb34&t=466b54bb264e48b199fc8e83ef1136b4'),
+    (1, 'Dinner #3', 'Short-order burger and fries with fountain beverage', 'dinner', 5.85, 'https://i0.wp.com/www.aspicyperspective.com/wp-content/uploads/2020/07/best-hamburger-patties-1.jpg?resize=1200%2C675&ssl=1'),
+    (1, 'The Brunch Meal', 'Three pieces of bacon, two pancakes, parsley buttered potatoes, roasted carrots, and cream of mushroom soup. Includes choice of beverage.',
+        'brunch', 7.65, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvSClEdvEmxolfPLdHtHDyHHhXRp79WJz1rQ&usqp=CAU'),
+    (1, 'Supper Supreme','Carved roast beef with chicken pan gravy, jefferson noodles, asparagus and corn bread, with cream of broccoli soup and choice of drink.', 'supper',
+        9.35, 'https://i0.wp.com/www.thedaintygreenapron.com/wp-content/uploads/2019/11/IMG_6454-scaled-e1647207342792.jpg?fit=750%2C818&ssl=1');
