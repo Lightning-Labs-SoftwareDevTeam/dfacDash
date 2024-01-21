@@ -113,7 +113,7 @@ CREATE TABLE meals (
 CREATE TABLE meal_items (
     meal_id integer,
     item_id integer,
-    quantity integer,
+    quantity integer DEFAULT 1,
     PRIMARY KEY (meal_id, item_id),
     CONSTRAINT fk_meal FOREIGN KEY (meal_id) REFERENCES meals(id),
     CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES items(id)
