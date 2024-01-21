@@ -253,3 +253,19 @@ INSERT INTO meal_items (meal_id, item_id) VALUES
     ((SELECT id FROM meals WHERE meal_name = 'Supper Supreme' AND dfac_id = 2), (SELECT id FROM items WHERE menu_item = 'ASPARAGUS 2.75OZ')),
     ((SELECT id FROM meals WHERE meal_name = 'Supper Supreme' AND dfac_id = 2), (SELECT id FROM items WHERE menu_item = 'CORN BREAD 1PC')),
     ((SELECT id FROM meals WHERE meal_name = 'Supper Supreme' AND dfac_id = 2), (SELECT id FROM items WHERE menu_item = 'CREAM OF BROCCOLI SOUP 9OZ'));
+
+INSERT INTO nutrition (menu_item_id, calories, protein, carbs, fat) VALUES
+    ((SELECT id FROM items where menu_item = 'BACON 3PC'), '125', '9g', '0.3g', '9.9g'),
+    ((SELECT id FROM items where menu_item = 'SCRAMBLED EGGS 2.25OZ'), '122', '6g', '1.1g', '7g'),
+    ((SELECT id FROM items where menu_item = 'HOME FRIED POTATOES 3.75OZ'), '154', '3.5g', '48g', '16.8g'),
+    ((SELECT id FROM items where menu_item = 'SAUSAGE PATTIES 2PATTY'), '447', '25g', '2g', '37g'),
+    ((SELECT id FROM items where menu_item = 'BROWN PAN GRAVY 2OZ'), '76', '1g', '3g', '3g'),
+    ((SELECT id FROM items where menu_item = 'OATMEAL 6OZ'), '119', '4.2g', '21g', '2.4g'),
+    ((SELECT id FROM items where menu_item = 'SAUTEED SPINACH W ONIONS 5.25OZ'), '126', '3g', '8g', '10g'),
+    ((SELECT id FROM items where menu_item = 'BOILED EGGS 2EGGS'), '155', '12g', '1.2g', '10g'),
+    ((SELECT id FROM items where menu_item = 'PANCAKE 2PAN'), '231', '3.6g', '16g', '5.4g'),
+    ((SELECT id FROM items where menu_item = 'STEAMED WHITE RICE 6OZ'), '147', '4.6g', '47g', '0.6g'),
+    ((SELECT id FROM items where menu_item = 'TURKEY LINKS 2LINKS'), '99', '8g', '2g', '7g'),
+    ((SELECT id FROM items where menu_item = 'GRITS 6OZ'), '102', '2.4g', '22g', '0.2g'),
+    ((SELECT id FROM items where menu_item = 'BROCCOLI W SAUTEED ONION'), '39', '1.7g', '4.6g', '2.8g'),
+    ((SELECT id FROM items where menu_item = 'BISCUITS 1EA'), '177', '3.3g', '19.4g', '8.6g');

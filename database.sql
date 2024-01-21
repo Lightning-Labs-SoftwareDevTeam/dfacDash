@@ -5,8 +5,8 @@ DROP TABLE IF EXISTS cooks CASCADE;
 DROP TABLE IF EXISTS items CASCADE;
 DROP TABLE IF EXISTS meals CASCADE;
 DROP TABLE IF EXISTS meal_items CASCADE;
-DROP TABLE IF EXISTS tags CASCADE;
 DROP TABLE IF EXISTS nutrition CASCADE;
+DROP TABLE IF EXISTS tags CASCADE;
 DROP TABLE IF EXISTS item_tags CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS order_meals CASCADE;
@@ -119,16 +119,6 @@ CREATE TABLE meal_items (
     CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES items(id)
 );
 
-CREATE TABLE tags (
-    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    dietary text,
-    allergen text,
-    promotional text,
-    descriptive text,
-    availability boolean NOT NULL DEFAULT TRUE,
-    img_pic text
-);
-
 CREATE TABLE nutrition (
     menu_item_id integer REFERENCES items(id),
     calories text,
@@ -138,6 +128,16 @@ CREATE TABLE nutrition (
     sodium text,
     cholesterol text,
     sugars text
+);
+
+CREATE TABLE tags (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    dietary text,
+    allergen text,
+    promotional text,
+    descriptive text,
+    availability boolean NOT NULL DEFAULT TRUE,
+    img_pic text
 );
 
 -- Intermediate table between items and tags
