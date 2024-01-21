@@ -2,14 +2,14 @@
 DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS dfacs CASCADE;
 DROP TABLE IF EXISTS cooks CASCADE;
-DROP TABLE IF EXISTS meals CASCADE;
 DROP TABLE IF EXISTS items CASCADE;
+DROP TABLE IF EXISTS meals CASCADE;
 DROP TABLE IF EXISTS meal_items CASCADE;
 DROP TABLE IF EXISTS tags CASCADE;
 DROP TABLE IF EXISTS nutrition CASCADE;
 DROP TABLE IF EXISTS item_tags CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
-DROP TABLE IF EXISTS order_items CASCADE;
+DROP TABLE IF EXISTS order_meals CASCADE;
 DROP TABLE IF EXISTS customer_likes CASCADE;
 DROP TABLE IF EXISTS surrogates CASCADE;
 
@@ -79,18 +79,6 @@ CREATE TABLE cooks (
     deleted_at timestamp
 );
 
-CREATE TABLE meals (
-    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    meal_name text,
-    description text,
-    type text,
-    img_pic text,
-    likes integer DEFAULT 0,
-    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp,
-    deleted_at timestamp
-);
-
 CREATE TABLE items (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     menu_item text NOT NULL,
@@ -101,6 +89,18 @@ CREATE TABLE items (
     color_code text,
     sodium_level text,
     da_standard text   
+);
+
+CREATE TABLE meals (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    meal_name text,
+    description text,
+    type text,
+    img_pic text,
+    likes integer DEFAULT 0,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp,
+    deleted_at timestamp
 );
 
 -- Intermediate table between meals and items, addressing the many-to-many relationship.
@@ -157,7 +157,7 @@ CREATE TABLE orders (
 );
 
 -- Intermediate table between orders and meals
-CREATE TABLE order_items (
+CREATE TABLE order_meals (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     order_id integer NOT NULL REFERENCES orders(id),
     meal_id integer NOT NULL REFERENCES meals(id),
