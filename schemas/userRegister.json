@@ -2,34 +2,53 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "http://example.com/example.json",
     "type": "object",
+    "properties": {
+        "username": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+        },
+        "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 20
+        },
+        "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+        },
+        "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+        },
+        "dodid": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 10
+        },
+        "email": {
+            "type":  "string",
+            "minLength": 6,
+            "maxLength": 100,
+            "format": "email"
+        },
+        "profilePicURL": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "username",
+        "password",
+        "firstName",
+        "lastName",
+        "dodid",
+        "role"
+    ],
     "oneOf": [
         {
             "properties": {
-                "username": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 30
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 8,
-                    "maxLength": 20
-                },
-                "firstName": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 50
-                },
-                "lastName": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 60
-                },
-                "dodid": {
-                    "type": "string",
-                    "minLength": 10,
-                    "maxLength": 10
-                },
                 "phNumber": {
                     "type": "string",
                     "minLength": 10,
@@ -45,59 +64,16 @@
                     "type": "integer",
                     "minimum": 0,
                     "maximum": 100
-                },
-                "email": {
-                    "type":  "string",
-                    "minLength": 6,
-                    "maxLength": 100,
-                    "format": "email"
-                },
-                "profilePicURL": {
-                    "type": "string"
-                },
+                },               
                 "role": { "const": "customer" }
             }
         },
         {
             "properties": {
                 "dfacID": { "type": "integer" },
-                "username": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 30
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 8,
-                    "maxLength": 20
-                },
                 "rank": {
                     "type": "string",
                     "minLength": 3
-                },
-                "firstName": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 50
-                },
-                "lastName": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 60
-                },
-                "dodid": {
-                    "type": "string",
-                    "minLength": 10,
-                    "maxLength": 10
-                },
-                "email": {
-                    "type":  "string",
-                    "minLength": 6,
-                    "maxLength": 100,
-                    "format": "email"
-                },
-                "profilePicURL": {
-                    "type": "string"
                 },
                 "isAdmin": { "type": "boolean" },
                 "isManager": { "type": "boolean" },
@@ -108,13 +84,5 @@
             }
         }
     ],
-    "additionalProperties": false,
-    "required": [
-        "username",
-        "password",
-        "firstName",
-        "lastName",
-        "dodid",
-        "role"
-    ]
+    "additionalProperties": false
 }
