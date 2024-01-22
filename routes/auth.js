@@ -6,15 +6,15 @@ const express = require("express");
 const router = new express.Router;
 
 const jsonschema = require("jsonschema");
-const userAuthSchema = require("../schemas/userAuth.json");
 const userRegisterSchema = require("../schemas/userRegister.json");
 const Customer = require("../models/customer");
+const Cook = require("../models/cook");
 const { createToken } = require("../helpers/tokens");
 const { BadRequestError } = require("../expressError");
 
 /** POST /auth/register
  * 
- * user must include { username, password, firstName, lastName, dodid, phNumber, role }
+ * user must include { username, password, firstName, lastName, dodid, role }
  * 
  * returns JWT token which can be used to authenticate further requests
  * Authorization required: none
@@ -28,8 +28,23 @@ router.post("/register", async (req, res, next) => {
             throw new BadRequestError(errs);
         }
 
-        const newCustomer = await Customer.register({ ...req.body, isAdmin: true, role:"customer" });
-        const token = createToken(newCustomer);
+        // Determine user model by the database table associated with the new row
+        // which in turn determines the value assigned to the 'role' property
+        let userModel;
+
+        switch(req.body.role) {
+            case "customer":
+                userModel = Customer;
+                break;
+            case "92G":
+                userModel = Cook;
+                break;
+            default:
+                throw new BadRequestError("Invalid user role");
+        }
+
+        const newUser = await userModel.register(req.body);
+        const token = createToken(newUser);
 
         return res.status(201).json({ token });
     } catch (err) {
