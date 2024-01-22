@@ -7,10 +7,18 @@ const { BadRequestError } = require("../expressError");
 const { SECRET_KEY } = require("../config");
 
 describe("createToken", () => {
-    test("works: not admin", () => {
+    test("works: manager but not admin", () => {
         expect.assertions(1);
 
-        const token = createToken( { username: "test", isAdmin: false, role: "manager" });
+        const token = createToken({ 
+            username: "test",
+            isAdmin: false,
+            role: "92G",
+            isManager: true,
+            updateMenu: true,
+            updateHours: true,
+            updateMeals: true
+        });
         const payload = jwt.verify(token, SECRET_KEY);
 
         expect(payload).toEqual({
@@ -18,7 +26,11 @@ describe("createToken", () => {
             iat: expect.any(Number),
             username: "test",
             isAdmin: false,
-            role: "manager"
+            role: "92G",
+            isManager: true,
+            canUpdateMenu: true,
+            canUpdateHours: true,
+            canUpdateMeals: true
         });
     });
 
@@ -37,10 +49,10 @@ describe("createToken", () => {
         });
     });
 
-    test("works: default", () => {
+    test("works: default 92G", () => {
         expect.assertions(1);
 
-        const token = createToken( { username: "test", role: "cook" });
+        const token = createToken( { username: "test", role: "92G" });
         const payload = jwt.verify(token, SECRET_KEY);
 
         expect(payload).toEqual({
@@ -48,7 +60,11 @@ describe("createToken", () => {
             iat: expect.any(Number),
             username: "test",
             isAdmin: false,
-            role: "cook"
+            role: "92G",
+            isManager: false,
+            canUpdateMenu: false,
+            canUpdateHours: false,
+            canUpdateMeals: false
         });
     });
 

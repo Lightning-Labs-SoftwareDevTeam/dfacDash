@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const { BadRequestError } = require("../expressError");
 const { SECRET_KEY } = require("../config");
 
-/** Helper function returns signed JWT from customer data */
+/** Helper function returns signed JWT from user's data */
 function createToken(user, expiration = '1h') {
     console.assert(user.role !== undefined, "createToken passed user without role property");
 
@@ -13,6 +13,13 @@ function createToken(user, expiration = '1h') {
         role: user.role,
         isAdmin: user.isAdmin || false
     };
+
+    if (user.role === "92G") {
+        payload.isManager = user.isManager || false;
+        payload.canUpdateMenu = user.updateMenu || false;
+        payload.canUpdateHours = user.updateHours || false;
+        payload.canUpdateMeals = user.updateMeals || false;
+    }
 
     // expiration set for added security
     const options = { expiresIn: expiration };
