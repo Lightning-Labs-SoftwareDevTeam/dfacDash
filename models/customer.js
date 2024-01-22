@@ -16,7 +16,8 @@ const { BCRYPT_WORK_FACTOR } = require("../config");
 class Customer {
     /** authenticate customer with username and password
      * 
-     * returns { username, first_name, last_name, phNumber, isAdmin, karmaScore, email, profilePicURL }
+     * returns { username, firstName, lastName, phNumber, mealCard, isAdmin, karmaScore, email, profilePicURL,
+     *     createdAt, updatedAt }
      * throws UnauthorizedError if customer not found or wrong password
      */
     static async authenticate(username, password) {
@@ -26,12 +27,14 @@ class Customer {
                     password,
                     fname AS "firstName",
                     lname AS "lastName",
-                    dodid,
-                    phnumber AS "phNumber",
+                    phone_number AS "phNumber",
+                    meal_card AS "mealCard",
                     is_admin AS "isAdmin",
                     karma_score AS "karmaScore",
                     email,
-                    profile_pic AS "profilePicURL"
+                    profile_pic AS "profilePicURL",
+                    created_at AS "createdAt",
+                    updated_at AS "updatedAt"
                 FROM customers
                 WHERE username = $1`,
             [username]
@@ -42,7 +45,6 @@ class Customer {
         const isValid = await bcrypt.compare(password, customer.password);
         if (isValid === true) {
             delete customer.password;
-            delete customer.dodid;
             return customer;
         }
         //if bad password, throw Unauthorized error
@@ -51,11 +53,11 @@ class Customer {
 
     /** Register new customer with data - Create
      * 
-     * returns { username, firstName, lastName, phNumber, isAdmin }
+     * returns { username, firstName, lastName, phNumber, mealCard, karmaScore, email, profilePicURL }
      * throws BadRequestError on duplicates
      */
     static async register(
-        { username, password, firstName, lastName, dodid, phNumber, isAdmin, email, profilePicURL, role }
+        { username, password, firstName, lastName, dodid, phNumber, mealCard, isAdmin, email, profilePicURL, role }
     ) {
         const duplicateCheck = await db.query(
             `SELECT username from customers
@@ -75,14 +77,15 @@ class Customer {
                                 fname,
                                 lname,
                                 dodid,
-                                phnumber,
+                                phone_number,
+                                meal_card,
                                 is_admin,
                                 email,
                                 profile_pic)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                 RETURNING username, fname AS "firstName", lname AS "lastName",
-                phnumber AS "phNumber", is_admin AS "isAdmin", karma_score AS "karmaScore",
-                email, profile_pic AS "profilePicURL"`,
+                phone_number AS "phNumber", meal_card AS "mealCard", is_admin AS "isAdmin",
+                karma_score AS "karmaScore", email, profile_pic AS "profilePicURL"`,
             [
                 username,
                 hashedPassword,
@@ -90,6 +93,7 @@ class Customer {
                 lastName,
                 dodid,
                 phNumber,
+                mealCard,
                 isAdmin,
                 email,
                 profilePicURL
@@ -104,21 +108,27 @@ class Customer {
 
     /** Find all customers - Read
      * 
-     * returns [{ username, firstName, lastName,
-     *              phNumber, isAdmin, karmaScore, email, profilePicURL }, { username, ... }, ...]
+     * returns [{ customerID, username, firstName, lastName, dodid,
+     *              phNumber, mealCard, isAdmin, karmaScore, email, profilePicURL, createdAt, updatedAt, deletedAt },
+     *          { customerID, username, ... }, { ... }, ...]
      */
     static async findAll() {
         const result = await db.query(
-            `SELECT username,
+            `SELECT id AS "customerID"
+                    username,
                     password,
                     fname AS "firstName",
                     lname AS "lastName",
                     dodid,
-                    phnumber AS "phNumber",
+                    phone_number AS "phNumber",
+                    meal_card AS "mealCard"
                     is_admin AS "isAdmin",
                     karma_score AS "karmaScore",
                     email,
-                    profile_pic AS "profilePicURL"
+                    profile_pic AS "profilePicURL",
+                    created_at AS "createdAt",
+                    updated_at AS "updatedAt",
+                    deleted_at AS "deletedAt"
                 FROM customers
                 ORDER BY username`
         );
@@ -128,31 +138,54 @@ class Customer {
 
     /** Given a customer username, return data about that customer - Read
      * 
-     * returns { username, firstName,lastName, dodid, 
-     *              phNumber, isAdmin, karmaScore, email, profilePicURL }
-     * TODO - connect with orders table and show all previous order data
+     * returns { customerID, username, firstName,lastName, dodid, phNumber,
+     *              mealCard, isAdmin, karmaScore, email, profilePicURL, createdAt, updatedAt, deletedAt,
+     *              orderID, dfacID, comments, orderDateTime, favorites }
+     * A separate query selects the customer's orders data and the spread operator
+     *     `...` combines the customer object with a property containing an orders array.
+     * 
      * throws NotFoundError if customer not found
      */
     static async get(username) {
         const customerRes = await db.query(
-            `SELECT username,
-                    password,
+            `SELECT id AS "customerID",
+                    username,
                     fname AS "firstName",
                     lname AS "lastName,
                     dodid,
-                    phnumber AS "phNumber",
+                    phone_number AS "phNumber",
+                    meal_card AS "mealCard",
                     is_admin AS "isAdmin",
                     karma_score AS "karmaScore",
                     email,
                     profile_pic AS "profilePicURL"
-                FROM customers
+                FROM customers 
                 WHERE username = $1`,
             [username]
         );
-        const customer = customerRes.rows[0];
 
+        const ordersRes = await db.query(
+            `SELECT id AS "orderID",
+                    dfac_id AS "dfacID",
+                    comments,
+                    order_timestamp AS "orderDateTime",
+                    favorites
+                FROM orders
+                WHERE customer_id = (SELECT id FROM customers WHERE username = $1)`,
+            [username]
+        );
+
+        const customer = customerRes.rows[0];
         if (!customer) throw new NotFoundError(`No user: ${username}`);
-        return customer;
+
+        const orders = ordersRes.rows;
+
+        const customerWithOrders = {
+            ...customer,
+            orders: orders
+        };
+
+        return customerWithOrders;
     }
 
     /** Patch customer data with `data` - Update
@@ -161,11 +194,12 @@ class Customer {
      * includes corresponding data.
      * 
      * Allowable data:
-     *      { password, firstName, lastName, phNumber, isAdmin, email, profilePicURL }
+     *      { password, firstName, lastName, phNumber, mealCard, isAdmin, email, profilePicURL }
      * Requires extra validation because of the ability to change password and make a user an admin.
      * 
-     * returns { username, firstName, lastName, phNumber, isAdmin, karmaScore,
-     *              email, profilePicURL }
+     * returns { username, firstName, lastName, phNumber, mealCard, isAdmin,
+     *     karmaScore, email, profilePicURL, updatedAt }
+     * 
      * throws NotFoundError if no customer with given username found
      */
     static async update(username, data) {
@@ -178,24 +212,28 @@ class Customer {
             {
                 firstName: "fname",
                 lastName: "lname",
-                phNumber: "phnumber",
+                phNumber: "phone_number",
+                mealCard: "meal_card",
                 isAdmin: "is_admin",
                 profilePicURL: "profile_pic"
             }
         );
         const usernameVarIdx = "$" + (values.length + 1);
 
-        const querySql = `Update customers
-                            SET ${setCols}
+        // Automatically adding current timestamp into updated_at field
+        const querySql = `UPDATE customers
+                            SET ${setCols}, updated_at = CURRENT_TIMESTAMP
                             WHERE username = ${usernameVarIdx}
                             RETURNING username,
                                         fname AS "firstName",
                                         lname AS "lastName",
-                                        phnumber AS "phNumber",
+                                        phone_number AS "phNumber",
+                                        meal_card AS "mealCard",
                                         is_admin AS "isAdmin",
                                         karma_score AS "karmaScore",
                                         email,
-                                        profile_pic AS "profilePicURL"`;
+                                        profile_pic AS "profilePicURL",
+                                        updated_at AS "updatedAt"`;
         const result = await db.query(querySql, [...values, username]);
 
         const customer = result.rows[0];
@@ -206,14 +244,17 @@ class Customer {
         return customer;
     }
 
-    /** Delete
+    /** "Soft" delete
      * 
-     * permanently removes a customer from database
-     * returns undefined; throws NotFoundError if no username found
+     * marks a customer as deleted by setting the deleted_at field without
+     *    actually deleting the customer row
+     * 
+     * returns usesrname of "deleted" customer; throws NotFoundError if no username found
      */
     static async remove(username) {
         let result = await db.query(
-            `DELETE FROM customers
+            `UPDATE customers
+                SET deleted_at = CURRENT_TIMESTAMP
                 WHERE username = $1
                 RETURNING username`,
             [username]
@@ -221,6 +262,8 @@ class Customer {
 
         const customer = result.rows[0];
         if (!customer) throw new NotFoundError(`No user: ${username}`);
+
+        return customer;
     }
 }
 
