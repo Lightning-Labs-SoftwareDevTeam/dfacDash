@@ -34,7 +34,7 @@ async function commonBeforeAll() {
     await db.query(
         `INSERT INTO dfacs (id, dfacname, dfac_logo, dfacaddress, dfacphnumber, rating, hours)
             VALUES ('dfac1', 'https://media.defense.gov/2016/Oct/04/2001643776/-1/-1/0/161004-F-XX000-003.JPG',
-            '123 Food Court)`
+            '123 Food Court')`
     )
 };
 
