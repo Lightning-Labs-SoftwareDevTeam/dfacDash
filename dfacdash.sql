@@ -4,7 +4,7 @@
 DROP DATABASE dfacdash;
 CREATE DATABASE dfacdash;
 
-\connect dfacdash
+\c dfacdash
 
 \i database.sql
 \i seed.sql

@@ -12,7 +12,7 @@ class ExpressError extends Error {
     }
 }
 
-/** Three common errors extending ExpressError, written here
+/** Four common errors extending ExpressError, written here
  * for convenience
  */
 class NotFoundError extends ExpressError {

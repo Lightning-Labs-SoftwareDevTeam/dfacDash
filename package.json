@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "jest -i",
+    "seed": "psql postgres -f dfacDash.sql",
     "start": "node server.js"
   },
   "repository": {

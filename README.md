@@ -1,7 +1,7 @@
 # dfacDash for ordering chow online
   Node Express prototype API for online ordering of DFAC meals to-go.
 ## Use Case
-Instead of waiting in line at the DFAC, patrons can order their food online! Accessing the app from anywhere, they can select menu-items and alert their chosen restaurant to prepare their plates for dine-in or pickup. Customers can like their favorite menu items and even pick-up for their teammates.
+Instead of waiting in line at the DFAC, patrons can order their food online! Accessing the app from anywhere, they can select meals and alert their chosen restaurant to prepare their plates for dine-in or pickup. Customers can like their favorite menu items and even pick-up meals for their teammates.
 
 ## Data models:
 
@@ -152,10 +152,6 @@ Another repo with React components consumes the API for single page loading of a
 
 ```
     $ npm install
+    $ npm run seed
 ```
-- For seeding the database in a postgresql database development environment, ensure Terminal is in the backend's directory. From within psql run the following:
-```
-  $ \c dfacdash
-  $ \i database.sql
-  $ \i seed.sql
-```
+- `seed` script inside of package.json works with a postgres database setup; see dfacdash.sql file for further details.
