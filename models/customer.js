@@ -215,6 +215,7 @@ class Customer {
                 phNumber: "phone_number",
                 mealCard: "meal_card",
                 isAdmin: "is_admin",
+                email: "email",
                 profilePicURL: "profile_pic"
             }
         );

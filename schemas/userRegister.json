@@ -28,19 +28,6 @@
             "minLength": 10,
             "maxLength": 10
         },
-        "phNumber": {
-            "type": "string",
-            "minLength": 10,
-            "maxLength": 14
-        },
-        "isAdmin": {
-            "type": "boolean"
-        },
-        "karmaScore": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 100
-        },
         "email": {
             "type":  "string",
             "minLength": 6,
@@ -49,21 +36,53 @@
         },
         "profilePicURL": {
             "type": "string"
-        },
-        "role": {
-            "type": "string",
-            "minLength": 4,
-            "maxLength": 8
         }
     },
-    "additionalProperties": false,
     "required": [
         "username",
         "password",
         "firstName",
         "lastName",
         "dodid",
-        "phNumber",
         "role"
-    ]
+    ],
+    "oneOf": [
+        {
+            "properties": {
+                "phNumber": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 14
+                },
+                "mealCard": {
+                    "type": "boolean"
+                },
+                "isAdmin": {
+                    "type": "boolean"
+                },
+                "karmaScore": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100
+                },               
+                "role": { "const": "customer" }
+            }
+        },
+        {
+            "properties": {
+                "dfacID": { "type": "integer" },
+                "rank": {
+                    "type": "string",
+                    "minLength": 3
+                },
+                "isAdmin": { "type": "boolean" },
+                "isManager": { "type": "boolean" },
+                "updateMenu": { "type": "boolean" },
+                "updateHours": { "type": "boolean" },
+                "updateMeals": { "type": "boolean" },
+                "role": { "const": "92G" }
+            }
+        }
+    ],
+    "additionalProperties": false
 }
