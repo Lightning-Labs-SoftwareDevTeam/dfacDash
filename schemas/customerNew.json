@@ -33,6 +33,9 @@
             "minLength": 10,
             "maxLength": 14
         },
+        "mealCard": {
+            "type": "boolean"
+        },
         "isAdmin": {
             "type": "boolean"
         },
@@ -63,6 +66,8 @@
         "firstName",
         "lastName",
         "dodid",
-        "phNumber"
+        "phNumber",
+        "mealCard",
+        "role"
     ]
 }

@@ -2,60 +2,112 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "http://example.com/example.json",
     "type": "object",
-    "properties": {
-        "username": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 30
+    "oneOf": [
+        {
+            "properties": {
+                "username": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 30
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 20
+                },
+                "firstName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 50
+                },
+                "lastName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 60
+                },
+                "dodid": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                },
+                "phNumber": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 14
+                },
+                "mealCard": {
+                    "type": "boolean"
+                },
+                "isAdmin": {
+                    "type": "boolean"
+                },
+                "karmaScore": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100
+                },
+                "email": {
+                    "type":  "string",
+                    "minLength": 6,
+                    "maxLength": 100,
+                    "format": "email"
+                },
+                "profilePicURL": {
+                    "type": "string"
+                },
+                "role": { "const": "customer" }
+            }
         },
-        "password": {
-            "type": "string",
-            "minLength": 8,
-            "maxLength": 20
-        },
-        "firstName": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 50
-        },
-        "lastName": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 60
-        },
-        "dodid": {
-            "type": "string",
-            "minLength": 10,
-            "maxLength": 10
-        },
-        "phNumber": {
-            "type": "string",
-            "minLength": 10,
-            "maxLength": 14
-        },
-        "isAdmin": {
-            "type": "boolean"
-        },
-        "karmaScore": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 100
-        },
-        "email": {
-            "type":  "string",
-            "minLength": 6,
-            "maxLength": 100,
-            "format": "email"
-        },
-        "profilePicURL": {
-            "type": "string"
-        },
-        "role": {
-            "type": "string",
-            "minLength": 4,
-            "maxLength": 8
+        {
+            "properties": {
+                "dfacID": { "type": "integer" },
+                "username": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 30
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 20
+                },
+                "rank": {
+                    "type": "string",
+                    "minLength": 3
+                },
+                "firstName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 50
+                },
+                "lastName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 60
+                },
+                "dodid": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                },
+                "email": {
+                    "type":  "string",
+                    "minLength": 6,
+                    "maxLength": 100,
+                    "format": "email"
+                },
+                "profilePicURL": {
+                    "type": "string"
+                },
+                "isAdmin": { "type": "boolean" },
+                "isManager": { "type": "boolean" },
+                "updateMenu": { "type": "boolean" },
+                "updateHours": { "type": "boolean" },
+                "updateMeals": { "type": "boolean" },
+                "role": { "const": "92G" }
+            }
         }
-    },
+    ],
     "additionalProperties": false,
     "required": [
         "username",
@@ -63,7 +115,6 @@
         "firstName",
         "lastName",
         "dodid",
-        "phNumber",
         "role"
     ]
 }

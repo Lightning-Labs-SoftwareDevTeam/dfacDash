@@ -23,8 +23,17 @@
             "minLength": 10,
             "maxLength": 14
         },
+        "mealCard": {
+            "type": "boolean"
+        },
         "isAdmin": {
             "type": "boolean"
+        },
+        "email": {
+            "type":  "string",
+            "minLength": 6,
+            "maxLength": 100,
+            "format": "email"
         },
         "profilePicURL": {
             "type": "string"
