@@ -74,6 +74,7 @@ CREATE TABLE cooks (
     update_menu boolean NOT NULL DEFAULT FALSE,
     update_hours boolean NOT NULL DEFAULT FALSE,
     update_meals boolean NOT NULL DEFAULT FALSE,
+    update_orders boolean NOT NULL DEFAULT FALSE,
     created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp,
     deleted_at timestamp
@@ -139,6 +140,7 @@ CREATE TABLE orders (
     order_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     ready_for_pickup timestamp,
     picked_up timestamp,
+    canceled boolean,
     favorite boolean NOT NULL DEFAULT FALSE
 );
 

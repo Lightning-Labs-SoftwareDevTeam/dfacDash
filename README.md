@@ -14,6 +14,7 @@ Instead of waiting in line at the DFAC, patrons can order their food online! Acc
 - `lname`: last name
 - `dodid`: validates customer
 - `phone_number`: in case DFAC needs to contact customer
+- `meal_card`: boolean
 - `is_admin`: for site owners who also want to order chow
 - `karma_score`: for tracking any customers trying to abuse the app
 - `email`: optional, but could be used for forgot username/password
@@ -38,11 +39,11 @@ Instead of waiting in line at the DFAC, patrons can order their food online! Acc
 - `dn_hours`: dfac dinner hours for dine-in
 - `bch_hours`: dfac brunch hours for dine-in
 - `sup_hours`: dfac supper hours for dine-in
-- `order_timebf`: window of availability time for online breakfast ordering
-- `order_timelu`: window of availability time for online lunch ordering
-- `order_timedn`: window of availability time for online dinner ordering
-- `order_timebch`: window of availability time for online brunch ordering
-- `order_timesup`: window of availability time for online supper ordering
+- `order_timebf`: window of availability time for online breakfast ordering and pickup
+- `order_timelu`: window of availability time for online lunch ordering/pickup
+- `order_timedn`: window of availability time for online dinner ordering/pickup
+- `order_timebch`: window of availability time for online brunch ordering/pickup
+- `order_timesup`: window of availability time for online supper ordering/pickup
 - `created_at`, `updated_at`, `deleted_at`
 
 ### 92Gs
@@ -62,6 +63,7 @@ Instead of waiting in line at the DFAC, patrons can order their food online! Acc
 - `update_menu`: for admin personnel who can only CRUD the menu
 - `update_hours`: for admin personnel who can only CRUD the hours
 - `update_meals`: for admin personnel who can only CRUD the meals
+- `update_orders`: boolean for 92Gs marking order status and updating karma scores
 - `created_at`, `updated_at`, `deleted_at`
 
 ### Menu items
@@ -119,6 +121,7 @@ Instead of waiting in line at the DFAC, patrons can order their food online! Acc
 - `order_timestamp`: time order was placed online
 - `ready_for_pickup`: timestamp when meal is ready for pickup
 - `picked_up`: timestamp that order was picked up by customer
+- `canceled`: boolean
 - `favorite`: optional toggle for saving a recurring transaction
 
 ### order_meals
