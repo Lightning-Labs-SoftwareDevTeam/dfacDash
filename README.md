@@ -117,6 +117,8 @@ Instead of waiting in line at the DFAC, patrons can order their food online! Acc
 - `comments`: text-field for any general concerns or specific requests; if a surrogate order the comment will auto-populate with "Pick-up by `customer_fname` `customer_lname` for `customer_fname` `customer_lname`
 - `to_go`: boolean for selecting food in a to-go box
 - `order_timestamp`: time order was placed online
+- `ready_for_pickup`: timestamp when meal is ready for pickup
+- `picked_up`: timestamp that order was picked up by customer
 - `favorite`: optional toggle for saving a recurring transaction
 
 ### order_meals

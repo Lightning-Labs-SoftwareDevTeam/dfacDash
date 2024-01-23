@@ -57,7 +57,7 @@ class Customer {
      * throws BadRequestError on duplicates
      */
     static async register(
-        { username, password, firstName, lastName, dodid, phNumber, mealCard, isAdmin, email, profilePicURL, role }
+        { username, password, firstName, lastName, dodid, phNumber, mealCard, isAdmin, email, profilePicURL }
     ) {
         const duplicateCheck = await db.query(
             `SELECT username from customers
@@ -101,7 +101,7 @@ class Customer {
         );
                
         const customer = result.rows[0]
-        customer.role = role; 
+        customer.role = "customer"; 
 
         return customer;
     }

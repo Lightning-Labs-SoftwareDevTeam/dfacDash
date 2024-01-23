@@ -28,6 +28,9 @@ router.post("/register", async (req, res, next) => {
             throw new BadRequestError(errs);
         }
 
+        if (req.body.karmaScore) req.body.role = "customer";
+        else req.body.role = "92G";
+
         // Determine user model by the database table associated with the new row
         // which in turn determines the value assigned to the 'role' property
         let userModel;
