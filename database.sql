@@ -137,6 +137,8 @@ CREATE TABLE orders (
     comments text,
     to_go boolean NOT NULL DEFAULT TRUE,
     order_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ready_for_pickup timestamp,
+    picked_up timestamp,
     favorite boolean NOT NULL DEFAULT FALSE
 );
 
