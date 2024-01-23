@@ -22,14 +22,16 @@ const { createToken } = require("../helpers/tokens");
  * Registration for normal users happens at a different endpoint.
  * 
  * returns the newly created customer and an auth token.
- * /{ user } --> {user: { username, firstName, lastName, phNumber, isAdmin,
- *          karmaScore, email, profilePicURL }, token }
+ * /{ user } --> {user: { username, firstName, lastName, dodid, phNumber, mealCard,
+ *          isAdmin, karmaScore, email, profilePicURL, role }, token }
  * Requires login and admin rights
  * */ 
 router.post("/", ensureLoggedIn, ensureAdmin, async (req, res, next) => {
     try {
-        const validator = jsonschema.validate(req.body, customerNewSchema);
+        // Explicitly setting the role property
+        req.body.role = "customer";
 
+        const validator = jsonschema.validate(req.body, customerNewSchema);
         if (!validator.valid) {
             const errs = validator.errors.map(e => e.stack);
             throw new BadRequestError(errs);
@@ -46,8 +48,9 @@ router.post("/", ensureLoggedIn, ensureAdmin, async (req, res, next) => {
 /** GET route for Reading customer data
  *  
  * returns all customers as the response object locals: users
- * / --> { users: [ {username, firstName, lastName, phNumber,
- *                      isAdmin, karmaScore, email, profilePicURL}, {...}, ...] }
+ * / --> { users: [ {customerID, username, firstName, lastName, dodid, phNumber,
+ *                      mealCard, isAdmin, karmaScore, email, profilePicURL, createdAt},
+ *          {...}, ...] }
  * Requires login and admin rights
 * */
 router.get("/", ensureLoggedIn, async (req, res, next) => {
@@ -61,10 +64,11 @@ router.get("/", ensureLoggedIn, async (req, res, next) => {
 });
 
 /** GET route for Reading customer data based on username
- * /[username] --> { user }
+ * /[username] --> { customer, orders }
  * 
- * returns { username, firstName, lastName, dodid, phNumber,
- *              isAdmin, karmacore, email, profilePicURL }
+ * returns { "customer": {customerID, username, firstName, lastName, dodid, phNumber,
+ *              mealCard, isAdmin, karmaScore, email, profilePicURL, createdAt, updated, deletedAt}, 
+ *             "orders": [{orderID, dfacID, comments, orderDateTime, favorites}, {...}, ...] }
  * Requires admin rights or user making request 
  *                          has username === username passed in
  */
@@ -90,10 +94,10 @@ router.get("/:username", ensureLoggedIn, async (req, res, next) => {
 /** PATCH route for Updating a customer's data
  * 
  * data can include { password, firstName, lastName, phNumber,
- *                      isAdmin, email, profilePicURL }}
+ *                      mealCard, isAdmin, email, profilePicURL }}
  * 
- * returns  { username, firstName, lastName, phNumber, isAdmin, karmaScore,
- *              email, profilePicURL }}
+ * returns  { username, firstName, lastName, phNumber, mealCard,
+ *             isAdmin, karmaScore, email, profilePicURL, updatedAt }}
  * Requires admin rights or user making route request has
  *                              username === username passed in
  */

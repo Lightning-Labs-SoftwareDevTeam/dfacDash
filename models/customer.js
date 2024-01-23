@@ -53,7 +53,7 @@ class Customer {
 
     /** Register new customer with data - Create
      * 
-     * returns { username, firstName, lastName, phNumber, mealCard, karmaScore, email, profilePicURL }
+     * returns { username, firstName, lastName, dodid, phNumber, mealCard, karmaScore, email, profilePicURL }
      * throws BadRequestError on duplicates
      */
     static async register(
@@ -83,7 +83,7 @@ class Customer {
                                 email,
                                 profile_pic)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-                RETURNING username, fname AS "firstName", lname AS "lastName",
+                RETURNING username, fname AS "firstName", lname AS "lastName", dodid,
                 phone_number AS "phNumber", meal_card AS "mealCard", is_admin AS "isAdmin",
                 karma_score AS "karmaScore", email, profile_pic AS "profilePicURL"`,
             [
@@ -195,7 +195,6 @@ class Customer {
      * 
      * Allowable data:
      *      { password, firstName, lastName, phNumber, mealCard, isAdmin, email, profilePicURL }
-     * Requires extra validation because of the ability to change password and make a user an admin.
      * 
      * returns { username, firstName, lastName, phNumber, mealCard, isAdmin,
      *     karmaScore, email, profilePicURL, updatedAt }
