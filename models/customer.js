@@ -138,9 +138,11 @@ class Customer {
 
     /** Given a customer username, return data about that customer - Read
      * 
-     * returns { customerID, username, firstName,lastName, dodid, phNumber,
-     *              mealCard, isAdmin, karmaScore, email, profilePicURL, createdAt, updatedAt, deletedAt,
-     *              orderID, dfacID, comments, orderDateTime, favorites }
+     * returns { customer: { customerID, username, firstName,lastName, dodid, phNumber,
+     *              mealCard, isAdmin, karmaScore, email, profilePicURL, createdAt, updatedAt, deletedAt},
+     *         order:[{orderID, dfacID, comments, orderDateTime, readyTime, pickedUpTime, canceled,  favorites},
+     *                  {orderID, ...}, {...}, ...] }
+     * 
      * A separate query selects the customer's orders data and the spread operator
      *     `...` combines the customer object with a property containing an orders array.
      * 
@@ -169,6 +171,9 @@ class Customer {
                     dfac_id AS "dfacID",
                     comments,
                     order_timestamp AS "orderDateTime",
+                    ready_for_pickup AS "readyTime",
+                    picked_up AS "pickedUpTime",
+                    canceled,
                     favorites
                 FROM orders
                 WHERE customer_id = (SELECT id FROM customers WHERE username = $1)`,

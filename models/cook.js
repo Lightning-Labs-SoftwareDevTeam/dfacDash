@@ -17,7 +17,7 @@ class Cook {
     /** authenticate 92G with username and password
      * 
      * returns { dfacID, username, rank, firstName, lastName, email, profilePicURL,
-     *      isAdmin, isManager, updateMenu, updateHours, updateMeals, createdAt, updatedAt }
+     *      isAdmin, isManager, updateMenu, updateHours, updateMeals, updateOrders, createdAt, updatedAt }
      * 
      * throws UnauthorizedError if customer not found or wrong password
      */
@@ -36,6 +36,7 @@ class Cook {
                     update_menu AS "updateMenu",
                     update_hours AS "updateHours",
                     update_meals AS "updateMeals",
+                    update_orders AS "updateOrders",
                     created_at AS "createdAt",
                     updated_at AS "updatedAt"
                 FROM cooks
@@ -57,13 +58,13 @@ class Cook {
     /** Register new 92G with data - CREATE
      * 
      * returns { dfacID, username, rank, firstName, lastName, dodid, email, profilePicURL,
-     *          isAdmin, isManager, updateMenu, updateHours, updateMeals }
+     *          isAdmin, isManager, updateMenu, updateHours, updateMeals, updateOrders }
      * 
      * throws BadRequestError on duplicates
      */
     static async register(
         { dfacID, username, password, rank, firstName, lastName, dodid, email, profilPicURL,
-            isAdmin, isManager, updateMenu, updateHours, updateMeals}
+            isAdmin, isManager, updateMenu, updateHours, updateMeals, updateOrders}
     ) {
         const duplicateCheck = await db.query(
             `SELECT username FROM cooks
@@ -91,8 +92,9 @@ class Cook {
                                 is_manager,
                                 update_menu,
                                 update_hours,
-                                update_meals)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                                update_meals,
+                                update_orders)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
                 RETURNING dfac_id AS "dfacID",
                             username, rank,
                             fname AS "firstName",
@@ -103,10 +105,11 @@ class Cook {
                             is_manager AS "isManager",
                             update_menu AS "updateMenu",
                             update_hours AS "updateHours",
-                            update_meals AS "updateMeals"`,
+                            update_meals AS "updateMeals",
+                            update_orders AS "updateOrders"`,
             [
                 dfacID, username, hashedPassword, firstName, lastName, dodid, email,
-                profilPicURL, isAdmin, isManager, updateMenu, updateHours, updateMeals
+                profilPicURL, isAdmin, isManager, updateMenu, updateHours, updateMeals, updateOrders
             ]
         );
 
@@ -115,4 +118,10 @@ class Cook {
 
         return cook;
     }
+
+    /** Find all cooks - READ
+     * 
+     * returns [{ cookID, dfacID, username, rank, firstName, lastName, dodid,
+     *               }]
+     */
 }

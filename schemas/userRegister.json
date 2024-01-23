@@ -80,6 +80,7 @@
                 "updateMenu": { "type": "boolean" },
                 "updateHours": { "type": "boolean" },
                 "updateMeals": { "type": "boolean" },
+                "updateOrders": { "type": "boolean" },
                 "role": { "const": "92G" }
             }
         }

@@ -19,6 +19,7 @@ function createToken(user, expiration = '1h') {
         payload.canUpdateMenu = user.updateMenu || false;
         payload.canUpdateHours = user.updateHours || false;
         payload.canUpdateMeals = user.updateMeals || false;
+        payload.canUpdateOrders = user.updateOrders || false;
     }
 
     // expiration set for added security

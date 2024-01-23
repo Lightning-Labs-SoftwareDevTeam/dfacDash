@@ -57,6 +57,9 @@
         "updateMeals": {
             "type": "boolean"
         },
+        "updateOrders": {
+            "type": "boolean"
+        },
         "role": {
             "type": "string",
             "minLength": 3,
