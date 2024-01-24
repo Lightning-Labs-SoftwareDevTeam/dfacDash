@@ -130,7 +130,6 @@ class Cook {
             `SELECT id AS "cookID",
                     dfac_id AS "dfacID",
                     username,
-                    password,
                     rank,
                     fname AS "firstName",
                     lname AS "lastName",
@@ -151,6 +150,100 @@ class Cook {
         );
 
         return result.rows;
+    }
+    static async findAllFromDFAC(dfacID) {
+        const result = await db.query(
+            `SELECT id AS "cookID",
+                    dfac_id AS "dfacID",
+                    username,
+                    rank,
+                    fname AS "firstName",
+                    lname AS "lastName",
+                    dodid,
+                    email,
+                    profile_pic AS "profilePicURL",
+                    is_admin AS "isAdmin",
+                    is_manager AS "isManager",
+                    update_menu AS "updateMenu",
+                    update_hours AS "updateHours",
+                    update_meals AS "updateMeals",
+                    update_orders AS "updateOrders",
+                    created_at AS "createdAt",
+                    updated_at AS "updatedAt",
+                    deleted_at AS "deletedAt"
+                FROM cooks
+                WHERE dfac_id = $1
+                ORDER BY lname`,
+                [dfacID]
+        );
+
+        return result.rows;
+    }
+
+    /** Function for associating a username with a DFAC id 
+     * 
+     * throws NotFoundError if username not found, otherwise
+     *  sets the id = 0 if dfac_id field IS NULL
+     * 
+    */
+    static async getDFACIDbyUsername(username) {
+        const result = await db.query(
+            `SELECT dfac_id AS "dfacID"
+                FROM cooks
+                WHERE username = $1`,
+            [username]
+        );
+
+        if (result.rows.length === 0 ) {
+            throw new NotFoundError(`No user: ${username}`);
+        }
+
+        const dfacID = result.rows[0].dfacID;
+        if (dfacID === null) {
+            dfacID = 0;
+        }
+
+        return dfacID;
+    }
+
+    /** Given a 92G username, return data about that 92G - READ
+     * 
+     * returns returns { "cook": {dfacID, cookID, username, rank, firstName, lastName, dodid, email, profilePicURL, isAdmin,
+ *              isManager, updateMenu, updateHours, updateMeals, updateOrders, createdAt, updated, deletedAt}
+     * 
+     * throws NotFoundError if username not found
+     */
+    static async get(username) {
+        const result = await db.query(
+            `SELECT id AS "cookID",
+                    dfac_id AS "dfacID",
+                    username,
+                    rank,
+                    fname AS "firstName",
+                    lname AS "lastName",
+                    dodid,
+                    email,
+                    profile_pic AS "profilePicURL",
+                    is_admin AS "isAdmin",
+                    is_manager AS "isManager",
+                    update_menu AS "updateMenu",
+                    update_hours AS "updateHours",
+                    update_meals AS "updateMeals",
+                    update_orders AS "updateOrders",
+                    created_at AS "createdAt",
+                    updated_at AS "updatedAt",
+                    deleted_at AS "deletedAt"
+                FROM cooks
+                WHERE username = $1`,
+                [username]
+        );
+
+        if (result.rows.length === 0 ) {
+            throw new NotFoundError(`No user: ${username}`);
+        }
+        const cook = result.rows[0];
+
+        return cook;
     }
 }
 
