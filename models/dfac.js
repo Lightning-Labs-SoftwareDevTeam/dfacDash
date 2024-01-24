@@ -18,7 +18,8 @@ class Dfac {
      *  Requires {dfacName, street, city, state, zip, dfacPhone} as input, but optionally accepts all the other dfac attributes too
      * 
      *  returns { dfacName, dfacLogo, street, bldgNum, city, state, zip, dfacPhone, flashMsg1, flashMsg2,
-     *              bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup }
+     *              bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup,
+     *              createdAt }
      */
     static async add(
         { dfacName, dfacLogo=null, street, bldgNum=null, city, state, zip, dfacPhone, flashMsg1=null, flashMsg2=null,
@@ -60,7 +61,7 @@ class Dfac {
                 RETURNING id AS "dfacID", dfac_name AS "dfacName", dfac_logo AS "dfacLogo", street_address AS "street", bldg_num AS bldgNum,
                     city, state_abb AS "state", zip_code AS "zip", dfac_phnumber AS "dfacPhone", flash_msg1 AS "flashMsg1",
                     flash_msg2 AS "flashMsg2", bf_hours AS "bfHours", lu_hours AS "luHours", dn_hours AS "dnHours", order_timebf
-                    AS "orderBf", order_timelu AS "orderLu", order_timedn AS "orderDn", order_timesup AS "orderSup"`,
+                    AS "orderBf", order_timelu AS "orderLu", order_timedn AS "orderDn", order_timesup AS "orderSup" created_at AS "createdAt"`,
             [
                 dfacName, dfacLogo, street, bldgNum, city,
                 state, zip, dfacPhone, flashMsg1, flashMsg2, 
@@ -155,7 +156,8 @@ class Dfac {
      * 
      * returns
      * { dfac: {dfacID, dfacName, dfacLogo, street, bldgNum, city, state, zip, dfacPhone, flashMsg1, flashMsg2,
-     *                  bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup} }
+     *                  bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup
+     *                  createdAt, updatedAt} }
      *
      * throws NotFoundError if dfacID not found
      */
@@ -187,8 +189,8 @@ class Dfac {
         );
         const dfacIDVarIdx = "$" + (values.length + 1);
 
-        const querySql = `UPDATE customers
-                            SET ${setCols}
+        const querySql = `UPDATE dfacs
+                            SET ${setCols}, updated_at = CURRENT_TIMESTAMP
                             WHERE id = ${dfacIDVarIdx}
                             RETURNING id AS "dfacID",
                                     dfac_name AS "dfacName", 
@@ -207,7 +209,9 @@ class Dfac {
                                     order_timebf AS "orderBf", 
                                     order_timelu AS "orderLu", 
                                     order_timedn AS "orderDn", 
-                                    order_timesup AS "orderSup"`;
+                                    order_timesup AS "orderSup",
+                                    created_at AS "createdAt"
+                                    updated_at AS "updatedAt"`;
         const result = await db.query(querySql, [...values, dfacID]);
 
         const dfac = result.rows[0];
@@ -227,7 +231,8 @@ class Dfac {
      * 
      * returns
      * { dfac: {dfacID, dfacName, dfacLogo, street, bldgNum, city, state, zip, dfacPhone, flashMsg1, flashMsg2,
-     *                  bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup} }
+     *                  bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup
+     *                      updatedAt} }
      *
      * throws NotFoundError if dfacID not found
      */
@@ -249,8 +254,8 @@ class Dfac {
         );
         const dfacIDVarIdx = "$" + (values.length + 1);
 
-        const querySql = `UPDATE customers
-                            SET ${setCols}
+        const querySql = `UPDATE dfacs
+                            SET ${setCols}, updated_at = CURRENT_TIMESTAMP
                             WHERE id = ${dfacIDVarIdx}
                             RETURNING id AS "dfacID",
                                     dfac_name AS "dfacName", 
@@ -269,8 +274,31 @@ class Dfac {
                                     order_timebf AS "orderBf", 
                                     order_timelu AS "orderLu", 
                                     order_timedn AS "orderDn", 
-                                    order_timesup AS "orderSup"`;
+                                    order_timesup AS "orderSup",
+                                    updated_at AS "updatedAt"`;
         const result = await db.query(querySql, [...values, dfacID]);
+
+        const dfac = result.rows[0];
+        if (!dfac) throw new NotFoundError(`No dfac: ${dfacID}`);
+
+        return dfac;
+    }
+
+    /** "Soft" delete
+     * 
+     * marks a dfac as deleted by setting the deleted_at field without
+     *    actually deleting the dfacs row
+     * 
+     * returns dfacName of "deleted" dfac; throws NotFoundError if no dfacID found
+     */
+    static async remove(dfacID) {
+        let result = await db.query(
+            `UPDATE dfacs
+                SET deleted_at = CURRENT_TIMESTAMP
+                WHERE id = $1
+                RETURNING dfac_name AS "dfacName"`,
+            [dfacID]
+        );
 
         const dfac = result.rows[0];
         if (!dfac) throw new NotFoundError(`No dfac: ${dfacID}`);
