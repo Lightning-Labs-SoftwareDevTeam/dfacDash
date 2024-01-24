@@ -121,9 +121,37 @@ class Cook {
 
     /** Find all cooks - READ
      * 
-     * returns [{ cookID, dfacID, username, rank, firstName, lastName, dodid,
-     *               }]
+     * returns [{ cookID, dfacID, username, rank, firstName, lastName, dodid, email, profilePicURL,
+     *               isAdmin, isManagaer, updateMenu, updateHours, updateMeals, updateOrders, createdAt
+     *               updatedAt, deletedAt }, { cookID, ... }, { ... }, ...]
      */
+    static async findAll() {
+        const result = await db.query(
+            `SELECT id AS "cookID",
+                    dfac_id AS "dfacID",
+                    username,
+                    password,
+                    rank,
+                    fname AS "firstName",
+                    lname AS "lastName",
+                    dodid,
+                    email,
+                    profile_pic AS "profilePicURL",
+                    is_admin AS "isAdmin",
+                    is_manager AS "isManager",
+                    update_menu AS "updateMenu",
+                    update_hours AS "updateHours",
+                    update_meals AS "updateMeals",
+                    update_orders AS "updateOrders",
+                    created_at AS "createdAt",
+                    updated_at AS "updatedAt",
+                    deleted_at AS "deletedAt"
+                FROM cooks
+                ORDER BY lname`
+        );
+
+        return result.rows;
+    }
 }
 
 module.exports = Cook;

@@ -26,7 +26,7 @@ const { createToken } = require("../helpers/tokens");
  *          isAdmin, karmaScore, email, profilePicURL, role }, token }
  * Requires login and admin rights
  * */ 
-router.post("/", ensureLoggedIn, ensureAdmin, async (req, res, next) => {
+router.post("/", authenticateJWT, ensureLoggedIn, ensureAdmin, async (req, res, next) => {
     try {
         // Explicitly setting the role property
         req.body.role = "customer";

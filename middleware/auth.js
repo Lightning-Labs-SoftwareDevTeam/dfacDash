@@ -59,6 +59,36 @@ function ensureAdmin(req, res, next) {
     }
 }
 
+/** ensure the isManager value equals true; ensures the logged-in user has
+ * manager privileges. If not, raise Forbidden error
+ */
+function ensureManager(req, res, next) {
+    try {
+        if (!res.locals.user || !res.locals.user.isManager) {
+            throw new ForbiddenError();
+        }
+        return next();
+    } catch (err) {
+        next(err);
+    }
+}
+
+/** middleware that ensures either isAdmin or isManager equals true */
+function ensureAdminOrManager(req, res, next) {
+    try {
+        const user = res.locals.user;
+        if (!user) {
+            throw new UnauthorizedError();
+        }
+        if (user.isAdmin || user.isManager) {
+            return next();
+        }
+        throw new ForbiddenError();
+    } catch (err) {
+        return next(err);
+    }
+}
+
 /** implements a check for differentiating between user roles and ensuring
  * that res.locals.user has correct role property; 
 */
@@ -75,5 +105,7 @@ module.exports = {
     authenticateJWT,
     ensureLoggedIn,
     ensureAdmin,
+    ensureManager,
+    ensureAdminOrManager,
     ensureRole
 };
