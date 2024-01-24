@@ -75,13 +75,14 @@ class Dfac {
     /** Find all dfacs - READ
      * 
      * returns all dfacs as the response object locals: dfacs
-     * { dfacs: [ {dfacName, dfacLogo, street, bldgNum, city, state, zip, dfacPhone, flashMsg1, flashMsg2,
+     * { dfacs: [ {dfacID, dfacName, dfacLogo, street, bldgNum, city, state, zip, dfacPhone, flashMsg1, flashMsg2,
      *                  bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup },
      *                              {dfacName, ...}, {...}, ...] }
      */
     static async findAll() {
         const result = await db.query(
-            `SELECT dfac_name AS "dfacName", 
+            `SELECT id AS "dfacID",
+                    dfac_name AS "dfacName", 
                     dfac_logo AS "dfacLogo", 
                     street_address AS "street", 
                     bldg_num AS bldgNum,
@@ -99,10 +100,48 @@ class Dfac {
                     order_timedn AS "orderDn", 
                     order_timesup AS "orderSup"
                 FROM dfacs
-                ORDER BY dfac_name`
+                ORDER BY id`
         );
 
         return result.rows;
+    }
+
+    /** Find a dfac by dfacID - READ
+     * 
+     * returns
+     * { dfac: {dfacID, dfacName, dfacLogo, street, bldgNum, city, state, zip, dfacPhone, flashMsg1, flashMsg2,
+     *                  bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup} }
+     */
+    static async get(dfacID) {
+        const result = await db.query(
+            `SELECT id AS "dfacID",
+                    dfac_name AS "dfacName", 
+                    dfac_logo AS "dfacLogo", 
+                    street_address AS "street", 
+                    bldg_num AS bldgNum,
+                    city, 
+                    state_abb AS "state", 
+                    zip_code AS "zip", 
+                    dfac_phnumber AS "dfacPhone", 
+                    flash_msg1 AS "flashMsg1",
+                    flash_msg2 AS "flashMsg2", 
+                    bf_hours AS "bfHours", 
+                    lu_hours AS "luHours", 
+                    dn_hours AS "dnHours", 
+                    order_timebf AS "orderBf", 
+                    order_timelu AS "orderLu", 
+                    order_timedn AS "orderDn", 
+                    order_timesup AS "orderSup"
+                FROM dfacs
+                WHERE id = $1`,
+            [dfacID]
+        );
+
+        if (result.rows.length === 0 ) {
+            throw new NotFoundError(`No dfac: ${dfacID}`);
+        }
+
+        return result.rows[0];
     }
 }
 
