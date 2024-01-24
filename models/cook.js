@@ -108,7 +108,7 @@ class Cook {
                             update_meals AS "updateMeals",
                             update_orders AS "updateOrders"`,
             [
-                dfacID, username, hashedPassword, firstName, lastName, dodid, email,
+                dfacID, username, hashedPassword, rank, firstName, lastName, dodid, email,
                 profilPicURL, isAdmin, isManager, updateMenu, updateHours, updateMeals, updateOrders
             ]
         );
@@ -125,3 +125,5 @@ class Cook {
      *               }]
      */
 }
+
+module.exports = Cook;

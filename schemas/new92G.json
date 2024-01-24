@@ -68,12 +68,20 @@
     },
     "additionalProperties": false,
     "required": [
+        "dfacID",
         "username",
         "password",
         "rank",
         "firstName",
         "lastName",
         "dodid",
+        "email",
+        "isAdmin",
+        "isManager",
+        "updateMenu",
+        "updateHours",
+        "updateMeals",
+        "updateOrders",
         "role"
     ]
 }
