@@ -29,24 +29,6 @@ router.post("/register/customer", async (req, res, next) => {
             throw new BadRequestError(errs);
         }
 
-        // if (req.body.karmaScore) req.body.role = "customer";
-        // else req.body.role = "92G";
-
-        // Determine user model by the database table associated with the new row
-        // which in turn determines the value assigned to the 'role' property
-        // let userModel;
-
-        // switch(req.body.role) {
-        //     case "customer":
-        //         userModel = Customer;
-        //         break;
-        //     case "92G":
-        //         userModel = Cook;
-        //         break;
-        //     default:
-        //         throw new BadRequestError("Invalid user role");
-        // }
-
         const newCustomer = await Customer.register(req.body);
         const token = createToken(newCustomer);
 

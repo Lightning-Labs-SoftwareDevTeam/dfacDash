@@ -1,0 +1,71 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "properties": {
+        "username": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+        },
+        "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 20
+        },
+        "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+        },
+        "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+        },
+        "dodid": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 10
+        },
+        "email": {
+            "type":  "string",
+            "minLength": 6,
+            "maxLength": 100,
+            "format": "email"
+        },
+        "profilePicURL": {
+            "type": "string"
+        },
+        "dfacID": { "type": "integer" },
+        "rank": {
+            "type": "string",
+            "minLength": 3
+        },
+        "isAdmin": { "type": "boolean" },
+        "isManager": { "type": "boolean" },
+        "updateMenu": { "type": "boolean" },
+        "updateHours": { "type": "boolean" },
+        "updateMeals": { "type": "boolean" },
+        "updateOrders": { "type": "boolean" },
+        "role": { "const": "92G" }
+    },
+    "required": [
+        "dfacID",
+        "username",
+        "password",
+        "rank",
+        "firstName",
+        "lastName",
+        "email",
+        "dodid",
+        "isAdmin",
+        "isManager",
+        "updateMenu", 
+        "updateHours",
+        "updateMeals",
+        "updateOrders",
+        "role"
+    ],
+    "additionalProperties": false
+}

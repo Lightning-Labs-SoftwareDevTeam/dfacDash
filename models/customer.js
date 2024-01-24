@@ -114,14 +114,14 @@ class Customer {
      */
     static async findAll() {
         const result = await db.query(
-            `SELECT id AS "customerID"
+            `SELECT id AS "customerID",
                     username,
                     password,
                     fname AS "firstName",
                     lname AS "lastName",
                     dodid,
                     phone_number AS "phNumber",
-                    meal_card AS "mealCard"
+                    meal_card AS "mealCard",
                     is_admin AS "isAdmin",
                     karma_score AS "karmaScore",
                     email,
@@ -140,7 +140,7 @@ class Customer {
      * 
      * returns { customer: { customerID, username, firstName,lastName, dodid, phNumber,
      *              mealCard, isAdmin, karmaScore, email, profilePicURL, createdAt, updatedAt, deletedAt},
-     *         order:[{orderID, dfacID, comments, orderDateTime, readyTime, pickedUpTime, canceled,  favorites},
+     *         order:[{orderID, dfacID, comments, orderDateTime, readyTime, pickedUpTime, canceled,  favorite},
      *                  {orderID, ...}, {...}, ...] }
      * 
      * A separate query selects the customer's orders data and the spread operator
@@ -153,7 +153,7 @@ class Customer {
             `SELECT id AS "customerID",
                     username,
                     fname AS "firstName",
-                    lname AS "lastName,
+                    lname AS "lastName",
                     dodid,
                     phone_number AS "phNumber",
                     meal_card AS "mealCard",
@@ -174,7 +174,7 @@ class Customer {
                     ready_for_pickup AS "readyTime",
                     picked_up AS "pickedUpTime",
                     canceled,
-                    favorites
+                    favorite
                 FROM orders
                 WHERE customer_id = (SELECT id FROM customers WHERE username = $1)`,
             [username]
