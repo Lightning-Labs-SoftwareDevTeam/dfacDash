@@ -10,9 +10,12 @@ const PORT = +process.env.PORT || 3001;
 
 // Use different database depending on use case (dev, testing, or prod)
 function getDatabaseUri() {
+    const URI_DEV = "postgresql://dfacdash_dev:dfacdash@localhost:[]/dfacdash_dev"; //TODO: Enter your port number
+    const URI_TEST = "postgresql://dfacdash_test:dfacdash@localhost:[]/dfacdash_test"; //TODO: Enter your port number
+
     return (process.env.NODE_ENV === "test")
-        ? "postgresql://dfacdash_test:dfacdash_test12345@localhost:5433/dfacdash_test"
-        : process.env.DATABASE_URI || "postgresql://dfacdash_dev:dfacdash_dev123456@localhost:5432/dfacdash_dev";
+        ? URI_TEST
+        : process.env.DATABASE_URI || URI_DEV;
 }
 
 // Speed up bcrypt during tests since dfacdash does not test the safety algorithm
