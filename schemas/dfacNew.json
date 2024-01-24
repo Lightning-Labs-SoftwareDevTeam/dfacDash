@@ -1,0 +1,53 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "properties": {
+        "dfacName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+        },
+        "dfacLogo": { "type": "string" },
+        "street": {
+            "type": "string",
+            "minLength": 3
+        },
+        "bldgNum": { "type": "string" },
+        "city": {
+            "type": "string",
+            "minLength": 2
+        },
+        "state": {
+            "type":  "string",
+            "minLength": 2,
+            "maxLength": 3
+        },
+        "zip": {
+            "type": "integer",
+            "minimum": 5
+        },
+        "dfacPhone": { "type": "string" },
+        "flashMsg1": { "type": "string" },
+        "flashMsg2": { "type": "string" },
+        "bfHours": { "type": "string" },
+        "luHours": { "type": "string" },
+        "dnHours": { "type": "string" },
+        "bchHours": { "type": "string" },
+        "supHours": { "type": "string" },
+        "orderBf": { "type": "string" },
+        "orderLu": { "type": "string" },
+        "orderDn": { "type": "string" },
+        "orderBch": { "type": "string" },
+        "orderSup": { "type": "string" }        
+    },
+    "additionalProperties": false,
+    "required": [
+        "dfacName",
+        "street",
+        "city",
+        "state",
+        "zip",
+        "dfacPhone"
+    ]
+}
