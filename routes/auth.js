@@ -10,6 +10,7 @@ const customerRegisterSchema = require("../schemas/customerRegister.json");
 const cookRegisterSchema = require("../schemas/new92G.json");
 const Customer = require("../models/customer");
 const Cook = require("../models/cook");
+const Dfac = require("../models/dfac");
 const { createToken } = require("../helpers/tokens");
 const { BadRequestError } = require("../expressError");
 
@@ -59,6 +60,25 @@ router.post("/register/92G", async (req, res, next) => {
         const token = createToken(newCook);
 
         return res.status(201).json({ token });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** GET route for accessing DFAC data - READ
+ * 
+ * returns all dfacs as the response object locals: dfacs
+ * /auth/dfacs --> { dfacs: [ {dfacName, dfacLogo, street, bldgNum, city, state, zip, dfacPhone, flashMsg1, flashMsg2,
+ *                  bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup },
+ *                              {dfacName, ...}, {...}, ...] }
+ * 
+ * Authorization required: none
+ */
+router.get("/dfacs", async (req, res, next) => {
+    try {
+        const dfacs = await Dfac.findAll();
+
+        return res.json({ dfacs });
     } catch (err) {
         return next(err);
     }
