@@ -132,9 +132,9 @@ router.patch("/:username", authenticateJWT, ensureLoggedIn, async (req, res, nex
  * If user making request has username === username passed in, ok;
  *  otherwise, user must have admin rights
  */
-router.delete("/:username", ensureLoggedIn, async (req, res, next) => {
+router.delete("/:username", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
     try {
-        const requestorUsername = req.locals.user.username;
+        const requestorUsername = res.locals.user.username;
         const targetUsername = req.params.username;
 
         if (requestorUsername === targetUsername) {
