@@ -1,0 +1,19 @@
+services:
+ 
+  dfacdash_dev:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: dfacdash_dev
+      POSTGRES_PASSWORD: dfacdash_dev123456
+    ports:
+      - 5432:5432
+      
+  dfacdash_test:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: dfacdash_test
+      POSTGRES_PASSWORD: dfacdash_test12345
+    ports:
+      - 5433:5433
