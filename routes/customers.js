@@ -103,7 +103,7 @@ router.get("/:username", authenticateJWT, ensureLoggedIn, async (req, res, next)
  */
 router.patch("/:username", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
     try {
-        const requestorUsername = req.locals.user.username;
+        const requestorUsername = res.locals.user.username;
         const targetUsername = req.params.username;
 
         const validator = jsonschema.validate(req.body, customerUpdateSchema);
