@@ -7,7 +7,7 @@ const router = express.Router();
 
 const jsonschema = require("jsonschema");
 const cookNewSchema = require("../schemas/new92G.json");
-const cookUpdateSchema = require("../schemas/update92G.json");
+const update92GSchema = require("../schemas/update92G.json");
 const Cook = require("../models/cook");
 
 const {
@@ -15,9 +15,9 @@ const {
     ensureLoggedIn,
     ensureAdmin,
     ensureManager,
-    ensureRole,
     ensureAdminOrManager
 } = require("../middleware/auth");
+
 const { BadRequestError, ForbiddenError } = require("../expressError");
 const { createToken } = require("../helpers/tokens");
 
@@ -83,7 +83,7 @@ router.get("/", authenticateJWT, ensureLoggedIn, ensureAdmin, async (req, res, n
 router.get("/:dfacID", authenticateJWT, ensureLoggedIn, ensureManager, async (req, res, next) => {
     try {
         const dfacID = req.params.dfacID
-        const managerDfacID = req.user.dfacID
+        const managerDfacID = res.user.dfacID
 
         if (dfacID !== managerDfacID) {
             throw new ForbiddenError("DFAC access denied");
@@ -109,7 +109,7 @@ router.get("/:username", authenticateJWT, ensureLoggedIn, async (req, res, next)
         const requestorUsername = res.locals.user.username;
         const targetUsername = req.params.username;
 
-        const requestorDfacID = req.user.dfacID;
+        const requestorDfacID = res.user.dfacID;
         const targetUserDfacID = await Cook.getDFACIDbyUsername(targetUsername);
 
         if (requestorUsername === targetUsername || res.locals.user.isAdmin) {
@@ -121,6 +121,102 @@ router.get("/:username", authenticateJWT, ensureLoggedIn, async (req, res, next)
         } else {
             throw new ForbiddenError("Access denied");
         }
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** PATCH route for supervisors modifying a cook's data - UPDATE
+ * 
+ * data can include { dfac_id, rank, firstName, lastName, email, profilePicURL, isAdmin,
+ *                      isManager, updateMenu, updateHours, updateMeals, updateOrders }
+ * 
+ * returns  { dfacID, username, rank, firstName, lastName, email, profilePicURL isAdmin, isManager,
+ *             updateMenu, updateHours, updateMeals, updateOrders, updatedAt }
+ * 
+ * Requires admin rights or manager rights for the dfac matching username-dfacID
+ *                              
+ */
+router.patch("/:username", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
+    try {
+        const targetUsername = req.params.username;
+        const requestorDfacID = res.user.dfacID;
+        const targetUserDfacID = await Cook.getDFACIDbyUsername(targetUsername);
+
+
+        const validator = jsonschema.validate(req.body, update92GSchema);
+        if (!validator.valid) {
+            const errs = validator.errors.map(e => e.stack);
+            throw new BadRequestError(errs);
+        }
+
+        if (res.locals.user.isAdmin) {
+            const cook = await Cook.update(targetUsername, req.body);
+            return res.json({ cook });
+        } else if (requestorDfacID === targetUserDfacID && res.locals.user.isManager){
+            const cook = await Cook.update(targetUsername, req.body);
+            return res.json({ cook });
+        } else {
+            throw new ForbiddenError("Access denied");
+        }
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** PATCH route for self-modification of 92G data - UPDATE
+ * 
+ * data can include { password, rank, firstName, lastName, email, profilePicURL }
+ * 
+ * returns  { dfacID, username, rank, firstName, lastName, email, profilePicURL isAdmin, isManager,
+ *             updateMenu, updateHours, updateMeals, updateOrders, updatedAt }}
+ * 
+ * Requires user making route request has
+ *                              username === username passed in
+ *                              
+ */
+router.patch("/:username/self", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
+    try {
+        const requestorUsername = res.locals.user.username;
+        const targetUsername = req.params.username;
+
+        const validator = jsonschema.validate(req.body, customerUpdateSchema);
+        if (!validator.valid) {
+            const errs = validator.errors.map(e => e.stack);
+            throw new BadRequestError(errs);
+        }
+
+        if (requestorUsername === targetUsername) {
+            const cook = await Cook.selfEdit(targetUsername, req.body);
+            return res.json({ cook });
+        } else {
+            throw new ForbiddenError("Access denied");
+        }
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** DELETE route for final CRUD operations
+ * 
+ *  /[username] --> { deleted: username }
+ * If user making request has username === username passed in, ok;
+ *  otherwise, user must have admin rights
+ */
+router.delete("/:username", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
+    try {
+        const requestorUsername = res.locals.user.username;
+        const targetUsername = req.params.username;
+
+        if (requestorUsername === targetUsername) {
+            await Cook.remove(targetUsername);
+            return res.json({ deleted: targetUsername });
+        } else {
+            ensureAdmin(req, res, async () => 
+                await Cook.remove(targetUsername)
+                .then(() => res.json({ deleted: targetUsername }))
+                .catch(next));
+            }
     } catch (err) {
         return next(err);
     }

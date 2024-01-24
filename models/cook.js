@@ -209,7 +209,7 @@ class Cook {
     /** Given a 92G username, return data about that 92G - READ
      * 
      * returns returns { "cook": {dfacID, cookID, username, rank, firstName, lastName, dodid, email, profilePicURL, isAdmin,
- *              isManager, updateMenu, updateHours, updateMeals, updateOrders, createdAt, updated, deletedAt}
+     *              isManager, updateMenu, updateHours, updateMeals, updateOrders, createdAt, updated, deletedAt}
      * 
      * throws NotFoundError if username not found
      */
@@ -242,6 +242,146 @@ class Cook {
             throw new NotFoundError(`No user: ${username}`);
         }
         const cook = result.rows[0];
+
+        return cook;
+    }
+
+    /** Supervisors and admin function to Patch 92G data with `data` - UPDATE
+     * 
+     * Partial update is perfectly acceptable; fields only changed if patch request
+     * includes corresponding data.
+     * 
+     * Allowable data:
+     *      { dfacID, rank, firstName, lastName, email, profilePicURL, isAdmin,
+     *                      isManager, updateMenu, updateHours, updateMeals, updateOrders }
+     * 
+     * returns  { dfacID, username, rank, firstName, lastName, email, profilePicURL isAdmin, isManager,
+     *             updateMenu, updateHours, updateMeals, updateOrders, updatedAt }
+     * 
+     * throws NotFoundError if username not found
+     */
+    static async update(username, data) {
+        const { setCols, values } = sqlForPartialUpdate(
+            data,
+            {
+                dfacID: "dfac_id",
+                rank: "rank",
+                firstName: "fname",
+                lastName: "lname",
+                email: "email",
+                profilePicURL: "profile_pic",
+                isAdmin: "is_admin",
+                isManager: "is_manager",
+                updateMenu: "update_menu",
+                updatehours: "update_hours",
+                updateMeals: "update_meals",
+                updateOrders: "update_orders"                
+            }
+        );
+        const usernameVarIdx = "$" + (values.length + 1);
+
+        // Automatically adding current timestamp into updated_at field
+        const querySql = `UPDATE customers
+                            SET ${setCols}, updated_at = CURRENT_TIMESTAMP
+                            WHERE username = ${usernameVarIdx}
+                            RETURNING dfac_id AS "dfacID",
+                                        username,
+                                        rank,
+                                        fname AS "firstName",
+                                        lname AS "lastName",
+                                        email,
+                                        profile_pic AS "profilePicURL",
+                                        is_admin AS "isAdmin",
+                                        is_manager AS "isManager,
+                                        update_menu AS "updateMenu",
+                                        update_hours AS "updateHours,
+                                        update_meals AS "updateMeals",
+                                        update_orders AS "updateOrders",
+                                        updated_at AS "updatedAt"`;
+        const result = await db.query(querySql, [...values, username]);
+
+        const cook = result.rows[0];
+        if (!cook) throw new NotFoundError(`No user: ${username}`);
+
+        delete cook.password;
+        return cook;
+    }
+
+    /** Self-modify Patch 92G data with `data` - UPDATE
+     * 
+     * Partial update is perfectly acceptable; fields only changed if patch request
+     * includes corresponding data.
+     * 
+     * Allowable data:
+     *      { password, rank, firstName, lastName, email, profilePicURL }
+     * 
+     * returns  { dfacID, username, rank, firstName, lastName, email, profilePicURL isAdmin, isManager,
+     *             updateMenu, updateHours, updateMeals, updateOrders, updatedAt }
+     * 
+     * throws NotFoundError if username not found
+     */
+        static async selfEdit(username, data) {
+            if (data.password) {
+                data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
+            }
+
+            const { setCols, values } = sqlForPartialUpdate(
+                data,
+                {
+                    rank: "rank",
+                    firstName: "fname",
+                    lastName: "lname",
+                    email: "email",
+                    profilePicURL: "profile_pic",             
+                }
+            );
+            const usernameVarIdx = "$" + (values.length + 1);
+    
+            // Automatically adding current timestamp into updated_at field
+            const querySql = `UPDATE customers
+                                SET ${setCols}, updated_at = CURRENT_TIMESTAMP
+                                WHERE username = ${usernameVarIdx}
+                                RETURNING dfac_id AS "dfacID",
+                                            username,
+                                            rank,
+                                            fname AS "firstName",
+                                            lname AS "lastName",
+                                            email,
+                                            profile_pic AS "profilePicURL",
+                                            is_admin AS "isAdmin",
+                                            is_manager AS "isManager,
+                                            update_menu AS "updateMenu",
+                                            update_hours AS "updateHours,
+                                            update_meals AS "updateMeals",
+                                            update_orders AS "updateOrders",
+                                            updated_at AS "updatedAt"`;
+            const result = await db.query(querySql, [...values, username]);
+    
+            const cook = result.rows[0];
+            if (!cook) throw new NotFoundError(`No user: ${username}`);
+    
+            delete cook.password;
+            return cook;
+        }
+
+    /** "Soft" delete
+     * 
+     * marks a cook as deleted by setting the deleted_at field without
+     *    actually deleting the cooks row
+     * 
+     * returns username of "deleted" 92G; throws NotFoundError if no username found
+     */
+    static async remove(username) {
+        let result = await db.query(
+            `UPDATE cooks
+                SET deleted_at = CURRENT_TIMESTAMP
+                WHERE username = $1
+                RETURNING username`,
+            [username]
+        );
+
+        const cook = result.rows[0];
+        if (!cook) throw new NotFoundError(`No user: ${username}`);
 
         return cook;
     }

@@ -94,10 +94,10 @@ router.get("/:username", authenticateJWT, ensureLoggedIn, async (req, res, next)
 /** PATCH route for Updating a customer's data
  * 
  * data can include { password, firstName, lastName, phNumber,
- *                      mealCard, isAdmin, email, profilePicURL }}
+ *                      mealCard, isAdmin, email, profilePicURL }
  * 
  * returns  { username, firstName, lastName, phNumber, mealCard,
- *             isAdmin, karmaScore, email, profilePicURL, updatedAt }}
+ *             isAdmin, karmaScore, email, profilePicURL, updatedAt }
  * Requires admin rights or user making route request has
  *                              username === username passed in
  */
