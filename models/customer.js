@@ -254,7 +254,7 @@ class Customer {
      * marks a customer as deleted by setting the deleted_at field without
      *    actually deleting the customer row
      * 
-     * returns usesrname of "deleted" customer; throws NotFoundError if no username found
+     * returns username of "deleted" customer; throws NotFoundError if no username found
      */
     static async remove(username) {
         let result = await db.query(
