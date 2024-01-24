@@ -68,7 +68,7 @@ router.post("/register/92G", async (req, res, next) => {
 /** GET route for accessing DFAC data - READ
  * 
  * returns all dfacs as the response object locals: dfacs
- * /auth/dfacs --> { dfacs: [ {dfacName, dfacLogo, street, bldgNum, city, state, zip, dfacPhone, flashMsg1, flashMsg2,
+ * /auth/dfacs --> { dfacs: [ {dfacID, dfacName, dfacLogo, street, bldgNum, city, state, zip, dfacPhone, flashMsg1, flashMsg2,
  *                  bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup },
  *                              {dfacName, ...}, {...}, ...] }
  * 
@@ -79,6 +79,27 @@ router.get("/dfacs", async (req, res, next) => {
         const dfacs = await Dfac.findAll();
 
         return res.json({ dfacs });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** GET route for accessing a specific DFAC's data - READ
+ * 
+ * takes dfacID as a parameter
+ * 
+ * returns specific dfac data in the response object locals: dfac
+ * /auth/dfacs/[dfacID] --> { dfac: {dfacID, dfacName, dfacLogo, street, bldgNum, city, state, zip, dfacPhone, flashMsg1, flashMsg2,
+ *                  bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup} }
+ * 
+ * Authorization required: none
+ */
+router.get("/:dfacID", async (req, res, next) => {
+    try {
+        const dfacTarget = req.params.dfacID;
+        const dfac = await Dfac.get(dfacTarget);
+
+        return res.json({ dfac });
     } catch (err) {
         return next(err);
     }

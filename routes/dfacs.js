@@ -39,4 +39,6 @@ router.post("/", authenticateJWT, ensureLoggedIn, ensureAdmin, async(req, res, n
     }
 });
 
-/** GET route for reading dfac data is in the auth.js routes file. No authorization required */
+/** GET routes for reading dfac data is in the auth.js routes file. No authorization required */
+
+module.exports = router;
