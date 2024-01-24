@@ -82,4 +82,41 @@ router.patch("/:dfacID", authenticateJWT, ensureLoggedIn, async (req, res, next)
     }
 });
 
+/** PATCH route for modifying a DFAC's hours
+ *       -UPDATE-
+ * 
+ * data can include { bfHours, luHours, dnHours, bchHours, supHours, orderBf, 
+ *                      orderLu, orderDn, orderBch, orderSup }
+ * 
+ * returns
+ *      { dfac: {dfacID, dfacName, dfacLogo, street, bldgNum, city, state, zip, dfacPhone, flashMsg1, flashMsg2,
+ *                       bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup} }
+ * 
+ * Requires updateHours === TRUE and matching dfac IDs                           
+ */
+router.patch("/:dfacID", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
+    try {
+        const dfacTarget = req.params.dfacID;
+        const requestorDfacID = res.user.dfacID;
+
+        const validator = jsonschema.validate(req.body, dfacUpdateSchema);
+        if (!validator.valid) {
+            const errs = validator.errors.map(e => e.stack);
+            throw new BadRequestError(errs);
+        }
+
+        if (res.locals.user.isAdmin) {
+            const dfac = await Dfac.updateHours(dfacTarget, req.body);
+            return res.json({ dfac });
+        } else if (requestorDfacID === dfacTarget && res.locals.user.updateHours) {
+            const dfac = await Dfac.updateHours(dfacTarget, req.body);
+            return res.json({ dfac });
+        } else {
+            throw new ForbiddenError("Access denied");
+        }
+    } catch (err) {
+        return next(err);
+    }
+});
+
 module.exports = router;
