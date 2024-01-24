@@ -11,8 +11,8 @@ const PORT = +process.env.PORT || 3001;
 // Use different database depending on use case (dev, testing, or prod)
 function getDatabaseUri() {
     return (process.env.NODE_ENV === "test")
-        ? "postgresql:///dfacdash_test"
-        : process.env.DATABASE_URI || "postgresql:///dfacdash";
+        ? "postgresql://dfacdash_test:dfacdash_test12345@localhost:5433/dfacdash_test"
+        : process.env.DATABASE_URI || "postgresql://dfacdash_dev:dfacdash_dev123456@localhost:5432/dfacdash_dev";
 }
 
 // Speed up bcrypt during tests since dfacdash does not test the safety algorithm
