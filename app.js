@@ -16,10 +16,11 @@ const authRoutes = require("./routes/auth");
 app.use(express.json());
 app.use(cors());
 app.use(morgan("tiny"));
-app.use(authenticateJWT);
 
-// routes
+// routes that require authentication will use the auth JWT middleware
+customerRoutes.use(authenticateJWT);
 app.use("/customers", customerRoutes);
+// routes open to anyone do not require a token
 app.use("/auth", authRoutes);
 
 // Handle most errors with 404

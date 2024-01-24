@@ -10,7 +10,7 @@ const customerNewSchema = require("../schemas/customerNew.json");
 const customerUpdateSchema = require("../schemas/customerUpdate.json");
 const Customer = require("../models/customer");
 
-const { ensureLoggedIn, ensureAdmin } = require("../middleware/auth");
+const { ensureLoggedIn, ensureAdmin, authenticateJWT } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const { createToken } = require("../helpers/tokens");
 
@@ -53,7 +53,7 @@ router.post("/", ensureLoggedIn, ensureAdmin, async (req, res, next) => {
  *          {...}, ...] }
  * Requires login and admin rights
 * */
-router.get("/", ensureLoggedIn, async (req, res, next) => {
+router.get("/", authenticateJWT, ensureLoggedIn, ensureAdmin, async (req, res, next) => {
     try {
         const customers = await Customer.findAll();
 
@@ -68,13 +68,13 @@ router.get("/", ensureLoggedIn, async (req, res, next) => {
  * 
  * returns { "customer": {customerID, username, firstName, lastName, dodid, phNumber,
  *              mealCard, isAdmin, karmaScore, email, profilePicURL, createdAt, updated, deletedAt}, 
- *             "orders": [{orderID, dfacID, comments, orderDateTime, favorites}, {...}, ...] }
+ *             "orders": [{orderID, dfacID, comments, orderDateTime, favorite}, {...}, ...] }
  * Requires admin rights or user making request 
  *                          has username === username passed in
  */
-router.get("/:username", ensureLoggedIn, async (req, res, next) => {
+router.get("/:username", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
     try {
-        const requestorUsername = req.locals.user.username;
+        const requestorUsername = res.locals.user.username;
         const targetUsername = req.params.username;
 
         if (requestorUsername === targetUsername) {
@@ -101,7 +101,7 @@ router.get("/:username", ensureLoggedIn, async (req, res, next) => {
  * Requires admin rights or user making route request has
  *                              username === username passed in
  */
-router.patch("/:username", ensureLoggedIn, async (req, res, next) => {
+router.patch("/:username", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
     try {
         const requestorUsername = req.locals.user.username;
         const targetUsername = req.params.username;

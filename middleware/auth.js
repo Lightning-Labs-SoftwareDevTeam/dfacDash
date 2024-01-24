@@ -17,15 +17,18 @@ const { UnauthorizedError, ForbiddenError } = require("../expressError");
 function authenticateJWT(req, res, next) {
     try {
         const authHeader = req.headers && req.headers.authorization;
-    
+
         if (authHeader) {
             const token = authHeader.replace(/^[Bb]earer /, "").trim();
             res.locals.user = jwt.verify(token, SECRET_KEY);
+            return next();
+        } else {
+            throw new UnauthorizedError("No authorization token provided.");
         }
-
-        return next();
     } catch (err) {
-        return next();
+        console.log("JWT Authentication Error: ", err.message);
+        // catches failed verification 
+        return next(new UnauthorizedError("Invalid or expired token"));
     }
 }
 
@@ -33,7 +36,7 @@ function authenticateJWT(req, res, next) {
 function ensureLoggedIn(req, res, next) {
     try {
         if (!res.locals.user) {
-            console.log(res);
+            console.log("ensureLoggedIn - res.locals: ", res.locals);
             throw new UnauthorizedError();
         }
         return next();
