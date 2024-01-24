@@ -18,7 +18,7 @@ const {
     ensureRole,
     ensureAdminOrManager
 } = require("../middleware/auth");
-const { BadRequestError } = require("../expressError");
+const { BadRequestError, ForbiddenError } = require("../expressError");
 const { createToken } = require("../helpers/tokens");
 
 /** CRUD router functions for cooks data */
@@ -67,6 +67,60 @@ router.get("/", authenticateJWT, ensureLoggedIn, ensureAdmin, async (req, res, n
         const cooks = await Cook.findAll();
 
         return res.json({ cooks });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** GET route for accessing all the data of 92Gs assigned to a specific dfac - READ
+ *  
+ * returns all of the 92Gs with the given dfacID as the response object locals: users
+ * / --> {users: [ {cookID, dfacID, username, rank, firstName, lastName, dodid, profilePicURL,
+ *          isAdmin, isManager, updateMenu, updateHours, updateMeals, updateOrders, createdAt,
+ *          updatedAt, deletedAt}, {...}, ...]
+ * Requires login and DFAC manager rights
+* */
+router.get("/:dfacID", authenticateJWT, ensureLoggedIn, ensureManager, async (req, res, next) => {
+    try {
+        const dfacID = req.params.dfacID
+        const managerDfacID = req.user.dfacID
+
+        if (dfacID !== managerDfacID) {
+            throw new ForbiddenError("DFAC access denied");
+        }
+        const cooks = await Cook.findAllFromDFAC(dfacID);
+        return res.json({ cooks });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** GET route for 92G data based on username - READ
+ * /[username] --> { cook }
+ * 
+ * returns { "cook": {dfacID, cookID, username, rank, firstName, lastName, dodid, email, profilePicURL, isAdmin,
+ *              isManager, updateMenu, updateHours, updateMeals, updateOrders, createdAt, updated, deletedAt}
+ * Requires admin rights or user making request 
+ *                          has username === username passed in
+ *    or, manager rights for the dfac matching username-dfacID
+ */
+router.get("/:username", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
+    try {
+        const requestorUsername = res.locals.user.username;
+        const targetUsername = req.params.username;
+
+        const requestorDfacID = req.user.dfacID;
+        const targetUserDfacID = await Cook.getDFACIDbyUsername(targetUsername);
+
+        if (requestorUsername === targetUsername || res.locals.user.isAdmin) {
+            const cook = await Cook.get(targetUsername);
+            return res.json({ cook });
+        } else if (requestorDfacID === targetUserDfacID && res.locals.user.isManager){
+            const cook = await Cook.get(targetUsername);
+            return res.json({ cook });
+        } else {
+            throw new ForbiddenError("Access denied");
+        }
     } catch (err) {
         return next(err);
     }
