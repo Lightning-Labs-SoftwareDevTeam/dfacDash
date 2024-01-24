@@ -153,7 +153,7 @@ router.patch("/:username", authenticateJWT, ensureLoggedIn, async (req, res, nex
         if (res.locals.user.isAdmin) {
             const cook = await Cook.update(targetUsername, req.body);
             return res.json({ cook });
-        } else if (requestorDfacID === targetUserDfacID && res.locals.user.isManager){
+        } else if (requestorDfacID === targetUserDfacID && res.locals.user.isManager) {
             const cook = await Cook.update(targetUsername, req.body);
             return res.json({ cook });
         } else {
