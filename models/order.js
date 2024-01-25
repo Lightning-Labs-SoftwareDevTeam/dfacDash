@@ -17,7 +17,7 @@ class Order {
      * @param {boolean} favorite - Indicates if the order is marked as a favorite.
      * @returns {Promise<Object>} - The created order.
      */
-    static async createOrder(customerId, dfacId, comments, toGo, favorite) {
+    static async createOrder(customerId, dfacId, comments, toGo = null, favorite) {
         const result = await db.query(
             `INSERT INTO orders
                 (customer_id, dfac_id, comments, to_go, favorite)
@@ -42,12 +42,19 @@ class Order {
      * @param {integer} orderId - The ID of the order to delete.
      * @returns {Promise<Object>} - The deleted order.
      */
-    static async deleteOrder(orderId) {
-        const result = await db.query(
-            'DELETE FROM orders WHERE id = $1 RETURNING *',
-            [orderId]
+    static async remove(orderID) {
+        let result = await db.query(
+            `UPDATE orders
+             SET deleted_at = CURRENT_TIMESTAMP
+             WHERE id = $1
+             RETURNING id AS "orderID"`,
+            [orderID]
         );
-        return result.rows[0];
+    
+        const order = result.rows[0];
+        if (!order) throw new NotFoundError(`No order: ${orderID}`);
+    
+        return order;
     }
 
     /**
