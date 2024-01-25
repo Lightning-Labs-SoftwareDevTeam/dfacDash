@@ -271,5 +271,38 @@ class Customer {
         return customer;
     }
 }
+function isInOrderWindow() {
+    // Define the allowed time frames for ordering
+    const allowedTimeFrames = [
+        { startHour: 6, startMinute: 30, endHour: 8, endMinute: 30 },
+        { startHour: 10, startMinute: 0, endHour: 11, endMinute: 0 },
+        { startHour: 15, startMinute: 30, endHour: 16, endMinute: 30 }
+    ];
 
+    // Get current date and time
+    const currentDate = new Date();
+    const currentHour = currentDate.getHours();
+    const currentMinute = currentDate.getMinutes();
+
+    // Check if the current time is within any of the allowed time frames
+    const isWithinAllowedTimeFrame = allowedTimeFrames.some(({ startHour, startMinute, endHour, endMinute }) => {
+        const startTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), startHour, startMinute);
+        const endTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), endHour, endMinute);
+
+        return currentDate >= startTime && currentDate <= endTime;
+    });
+
+    return isWithinAllowedTimeFrame;
+}
+
+// Example usage when a user clicks the "order now" button
+const canOrder = isInOrderWindow();
+
+if (canOrder) {
+    // Redirect to the order page or perform the order-related action
+    console.log("You can access the order page!");
+} else {
+    // Show a flash message indicating that ordering is not allowed at the current time
+    console.log("Ordering is not allowed at the current time.");
+}
 module.exports = Customer;
