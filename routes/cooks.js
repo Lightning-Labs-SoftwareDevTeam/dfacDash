@@ -182,7 +182,7 @@ router.patch("/:username/self", authenticateJWT, ensureLoggedIn, async (req, res
         const requestorUsername = res.locals.user.username;
         const targetUsername = req.params.username;
 
-        const validator = jsonschema.validate(req.body, customerUpdateSchema);
+        const validator = jsonschema.validate(req.body, update92GSchema);
         if (!validator.valid) {
             const errs = validator.errors.map(e => e.stack);
             throw new BadRequestError(errs);
