@@ -12,7 +12,7 @@ const {
 /** Menu Item class consolidating related CRUD functions  */
 
 class Item {
-    /** Register new menu item with data - Create
+    /** Add new menu item with data - Create
      * 
      * returns 
      *      {itemID, menuItem, foodType, recipeCode, description,
@@ -68,8 +68,9 @@ class Item {
     /** Find all items - Read 
      * 
      * returns 
-     *      {itemID, menuItem, foodType, recipeCode, description,
-     *             likes, colorCode, sodiumLvl, regsStandard }
+     *      { items: {itemID, menuItem, foodType, recipeCode, description,
+     *             likes, colorCode, sodiumLvl, regsStandard }, {itemID,...},
+     *              {...}, ...}
     */
     static async findAll() {
         const result = await db.query(
@@ -89,7 +90,7 @@ class Item {
         return result.rows;
     }
 
-    /** Given the name of a menuItem, return data about that item, including the associated meals 
+    /** Given the id of a menuItem, return data about that item, including the associated meals 
      *          - READ - 
      * 
      * returns { item: {itemID, menuItem, foodType, recipeCode, description,
@@ -103,7 +104,7 @@ class Item {
      * 
      * throws NotFoundError if item not found
      */
-    static async get(menuItem) {
+    static async get(itemID) {
         const itemRes = await db.query(
             `SELECT id AS "itemID",
                     menu_item AS "menuItem",
@@ -115,8 +116,8 @@ class Item {
                     sodium_level AS "sodiumLvl",
                     da_standard AS "regsStandard"
                 FROM items
-                WHERE menu_item = $1`,
-            [menuItem]
+                WHERE id = $1`,
+            [itemID]
         );
 
         const nutritionRes = await db.query(
@@ -128,8 +129,8 @@ class Item {
                     cholesterol,
                     sugars
                 FROM nutrition
-                WHERE menu_item_id = (SELECT id from items WHERE menu_item = $1)`,
-            [menuItem]
+                WHERE menu_item_id = $1`,
+            [itemID]
         );
 
         const mealsRes = await db.query(
@@ -145,12 +146,12 @@ class Item {
                 FROM meals m
                 JOIN meal_items mi ON m.id = mi.meal_id
                 JOIN items i ON mi.item_id = i.id
-                WHERE i.menu_item = $1`,
-            [menuItem]
+                WHERE i.id = $1`,
+            [itemID]
         );
 
-        const item = customerRes.rows[0];
-        if (!item) throw new NotFoundError(`No item: ${menuItem}`);
+        const item = itemRes.rows[0];
+        if (!item) throw new NotFoundError(`No itemID: ${menuItem}`);
 
         const nutrition = nutritionRes.rows[0];
         const itemNutrition = { item, nutrition };
