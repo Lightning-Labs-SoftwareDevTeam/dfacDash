@@ -65,10 +65,14 @@ class Meal {
     /** Find a meal by mealID - READ
      * 
      * Returns
-     * { meal: {mealID, dfacID, mealName, description, type, price, imgPic, likes, createdAt} }
+     * { meal: {mealID, dfacID, mealName, description, type, price, imgPic, likes, createdAt}
+     *      items: [{ itemID, menuItem, foodType, recipeCode, description,
+     *             likes, colorCode, sodiumLvl, regsStandard }, { itemID,... },
+     *              {...}, ...}] 
+     *                              }
      */
     static async get(mealID) {
-        const result = await db.query(
+        const mealRes = await db.query(
             `SELECT id AS "mealID",
                     dfac_id AS "dfacID",
                     meal_name AS "mealName",
@@ -83,11 +87,32 @@ class Meal {
             [mealID]
         );
 
-        if (result.rows.length === 0) {
-            throw new NotFoundError(`No meal: ${mealID}`);
-        }
+        const itemsRes = await db.query(
+                `SELECT i.id AS "itemID",
+                        i.menu_item AS "menuItem",
+                        i.food_type AS "foodType",
+                        i.description,
+                        i.likes,
+                        i.color_code AS "colorCode",
+                        i.sodium_level AS "sodiumLvl"
+                    FROM items i
+                    JOIN meal_items mi ON i.id = mi.item_id
+                    JOIN meals m ON mi.meal_id = m.id
+                    WHERE m.id = $1`,
+                [mealID]
+        );
 
-        return result.rows[0];
+        const meal = mealRes.rows[0];
+        if (!meal) throw new NotFoundError(`No mealID: ${mealID}`);
+
+        const items = itemsRes.rows
+
+        const mealAndItems = {
+            meal: meal,
+            items: items
+        };
+
+        return mealAndItems;
     }
 
     /** Update a meal with `data` - UPDATE
