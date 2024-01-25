@@ -14,6 +14,7 @@ const cookRoutes = require("./routes/cooks");
 const dfacRoutes = require("./routes/dfacs");
 const itemRoutes = require("./routes/items");
 const mealRoutes = require("./routes/meals");
+const orderRoutes = require("./routes/orders");
 const authRoutes = require("./routes/auth");
 
 // Middleware
@@ -32,6 +33,7 @@ app.use("/dfacs", dfacRoutes);
 app.use("/auth", authRoutes);
 app.use("/items", itemRoutes);
 app.use("/meals", mealRoutes);
+app.use("/orders", orderRoutes);
 
 // Handle most errors with 404
 app.use((req, res, next) => {
