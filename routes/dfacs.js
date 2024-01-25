@@ -53,7 +53,8 @@ router.post("/", authenticateJWT, ensureLoggedIn, ensureAdmin, async(req, res, n
  * 
  * returns
  *      { dfac: {dfacID, dfacName, dfacLogo, street, bldgNum, city, state, zip, dfacPhone, flashMsg1, flashMsg2,
- *                       bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup} }
+ *                       bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup,
+ *                          createdAt, updatedAt} }
  * 
  * Requires supervisory rights
  */
@@ -90,7 +91,7 @@ router.patch("/:dfacID", authenticateJWT, ensureLoggedIn, async (req, res, next)
  * 
  * returns
  *      { dfac: {dfacID, dfacName, dfacLogo, street, bldgNum, city, state, zip, dfacPhone, flashMsg1, flashMsg2,
- *                       bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup} }
+ *                       bfHours, luHours, dnHours, bchHours, supHours, orderBf, orderLu, orderDn, orderBch, orderSup, updatedAt} }
  * 
  * Requires updateHours === TRUE and matching dfac IDs                           
  */
@@ -118,5 +119,23 @@ router.patch("/:dfacID", authenticateJWT, ensureLoggedIn, async (req, res, next)
         return next(err);
     }
 });
+
+    /** DELETE route for final CRUD operations
+     * 
+     *  /[dfacID] --> { deleted: dfacName }
+     * 
+     *  requires admin rights
+     */
+
+    router.delete("/:dfacID", authenticateJWT, ensureLoggedIn, ensureAdmin, async (req, res, next) => {
+        try {
+            const dfacTarget = req.params.dfacID;
+            const dfacName = await Dfac.remove(dfacTarget);
+
+            res.json({ deleted: dfacName });
+        } catch (err) {
+            return next(err);
+        }
+    });
 
 module.exports = router;

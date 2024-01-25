@@ -5,13 +5,14 @@ const { BadRequestError } = require("../expressError");
 const { SECRET_KEY } = require("../config");
 
 /** Helper function returns signed JWT from user's data */
-function createToken(user, expiration = '1h') {
+function createToken(user, expiration = '12h') {
     console.assert(user.role !== undefined, "createToken passed user without role property");
 
     let payload = {
         username: user.username,
         role: user.role,
-        isAdmin: user.isAdmin || false
+        isAdmin: user.isAdmin || false,
+        dfacID: user.dfacID || null
     };
 
     if (user.role === "92G") {
