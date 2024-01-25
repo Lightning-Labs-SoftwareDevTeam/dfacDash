@@ -25,7 +25,12 @@ router.get("/", async (req, res, next) => {
  * 
  * Authorization required: none
  * 
- * Returns { meal: { id, dfacID, mealName, description, type, price, imgPic, likes, createdAt, updatedAt } }
+ * Returns
+     * { meal: {mealID, dfacID, mealName, description, type, price, imgPic, likes, createdAt}
+     *      items: [{ itemID, menuItem, foodType, recipeCode, description,
+     *             likes, colorCode, sodiumLvl, regsStandard }, { itemID,... },
+     *              {...}, ...}] 
+     *                              }
  */
 router.get("/:id", async (req, res, next) => {
     try {
