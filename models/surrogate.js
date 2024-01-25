@@ -14,6 +14,26 @@ class Surrogate {
    * 
    * Returns { id, orderId, customerId, surrogateId, mealId, authorizationDoc }
    */
+  static async get(id) {
+    const result = await db.query(
+        `SELECT s.id, s.order_id AS "orderId", s.customer_id AS "customerId", 
+                s.surrogate_id AS "surrogateId", s.meal_id AS "mealId", 
+                s.authorization_doc AS "authorizationDoc",
+                o.order_status, c.customer_name, m.meal_name
+         FROM surrogates AS s
+         JOIN orders AS o ON s.order_id = o.id
+         JOIN customers AS c ON s.customer_id = c.id
+         JOIN meals AS m ON s.meal_id = m.id
+         WHERE s.id = $1`,
+        [id]
+    );
+
+    const surrogate = result.rows[0];
+    if (!surrogate) throw new NotFoundError(`No surrogate order with id: ${id}`);
+
+    return surrogate;
+  }
+
   static async create({ orderId, customerId, surrogateId, mealId, authorizationDoc }) {
     const result = await db.query(
       `INSERT INTO surrogates (order_id, customer_id, surrogate_id, meal_id, authorization_doc)
@@ -38,25 +58,6 @@ class Surrogate {
            FROM surrogates`
     );
     return result.rows;
-  }
-
-  /** Find a surrogate order by ID
-   * 
-   * Returns { id, orderId, customerId, surrogateId, mealId, authorizationDoc }
-   */
-  static async get(id) {
-    const result = await db.query(
-      `SELECT id, order_id AS "orderId", customer_id AS "customerId", surrogate_id AS "surrogateId",
-                   meal_id AS "mealId", authorization_doc AS "authorizationDoc"
-           FROM surrogates
-           WHERE id = $1`,
-      [id]
-    );
-
-    const surrogate = result.rows[0];
-    if (!surrogate) throw new NotFoundError(`No surrogate order with id: ${id}`);
-
-    return surrogate;
   }
 
   /** Delete a surrogate order
