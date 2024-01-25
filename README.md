@@ -155,8 +155,11 @@ Another repo with React components consumes the API for single page loading of a
 
 ## Setup
 
-```
-    $ npm install
-    $ npm run seed
-```
+1. npm install
+2. set up docker containers (``docker compose up -d``)
+3. check the ports where the containers are running from (``docker ps``)
+4. update /config.js with the correct port numbers
+5. copy the /sql/ directory into docker. (``docker cp ./sql/ [containername]:/media``)
+6. in Docker exec, run ``dfacdash.sql``
+
 - `seed` script inside of package.json works with a postgres database setup; see dfacdash.sql file for further details.
