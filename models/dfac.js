@@ -28,7 +28,7 @@ class Dfac {
     ) {
         const duplicateCheck = await db.query(
             `SELECT dfac_name from dfacs
-                WHERE username = $1`,
+                WHERE dfac_name = $1`,
             [dfacName]
         );
         if (duplicateCheck.rows[0]) {
@@ -38,10 +38,10 @@ class Dfac {
         const result = await db.query(
             `INSERT INTO dfacs
                             (dfac_name,
-                                dfac_logo
+                                dfac_logo,
                                 street_address,
                                 bldg_num,
-                                city text NOT
+                                city,
                                 state_abb,
                                 zip_code,
                                 dfac_phnumber,
@@ -57,11 +57,11 @@ class Dfac {
                                 order_timedn,
                                 order_timebch,
                                 order_timesup)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16. $17, $18, $19, $20)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
                 RETURNING id AS "dfacID", dfac_name AS "dfacName", dfac_logo AS "dfacLogo", street_address AS "street", bldg_num AS bldgNum,
                     city, state_abb AS "state", zip_code AS "zip", dfac_phnumber AS "dfacPhone", flash_msg1 AS "flashMsg1",
                     flash_msg2 AS "flashMsg2", bf_hours AS "bfHours", lu_hours AS "luHours", dn_hours AS "dnHours", order_timebf
-                    AS "orderBf", order_timelu AS "orderLu", order_timedn AS "orderDn", order_timesup AS "orderSup" created_at AS "createdAt"`,
+                    AS "orderBf", order_timelu AS "orderLu", order_timedn AS "orderDn", order_timesup AS "orderSup", created_at AS "createdAt"`,
             [
                 dfacName, dfacLogo, street, bldgNum, city,
                 state, zip, dfacPhone, flashMsg1, flashMsg2, 
@@ -96,9 +96,12 @@ class Dfac {
                     bf_hours AS "bfHours", 
                     lu_hours AS "luHours", 
                     dn_hours AS "dnHours", 
+                    bch_hours AS "bchHours",
+                    sup_hours AS "supHours",
                     order_timebf AS "orderBf", 
                     order_timelu AS "orderLu", 
-                    order_timedn AS "orderDn", 
+                    order_timedn AS "orderDn",
+                    order_timebch AS "orderBch", 
                     order_timesup AS "orderSup"
                 FROM dfacs
                 ORDER BY id`
@@ -210,7 +213,7 @@ class Dfac {
                                     order_timelu AS "orderLu", 
                                     order_timedn AS "orderDn", 
                                     order_timesup AS "orderSup",
-                                    created_at AS "createdAt"
+                                    created_at AS "createdAt",
                                     updated_at AS "updatedAt"`;
         const result = await db.query(querySql, [...values, dfacID]);
 
