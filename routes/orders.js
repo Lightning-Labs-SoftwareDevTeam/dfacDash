@@ -2,6 +2,27 @@ const express = require("express");
 const router = express.Router();
 const Order = require("../models/order");
 
+/** POST /orders
+ * 
+ * Creates a new order.
+ * 
+ * Authorization required: none
+ * 
+ * Accepts { customerID, dfacID, comments, toGo }
+ * 
+ * Returns { order: { id, customerID, dfacID, comments, toGo, orderTimestamp, readyForPickup, pickedUp, canceled, favorite } }
+ */
+router.post("/", async (req, res, next) => {
+    try {
+        const { customerID, dfacID, comments, toGo } = req.body;
+
+        const order = await Order.createOrder(customerID, dfacID, comments, toGo);
+        return res.status(201).json({ order });
+    } catch (err) {
+        return next(err);
+    }
+});
+
 /** GET /orders
  * 
  * Returns list of all orders.
@@ -12,7 +33,7 @@ const Order = require("../models/order");
  */
 router.get("/", async (req, res, next) => {
     try {
-        const orders = await Order.findAll();
+        const orders = await Order.getAllOrders();
         return res.json({ orders });
     } catch (err) {
         return next(err);
@@ -36,25 +57,6 @@ router.get("/:id", async (req, res, next) => {
     }
 });
 
-/** POST /orders
- * 
- * Creates a new order.
- * 
- * Authorization required: none
- * 
- * Accepts { customerID, dfacID, comments, toGo, orderTimestamp, readyForPickup, pickedUp, canceled, favorite }
- * 
- * Returns { order: { id, customerID, dfacID, comments, toGo, orderTimestamp, readyForPickup, pickedUp, canceled, favorite } }
- */
-router.post("/", async (req, res, next) => {
-    try {
-        const order = await Order.create(req.body);
-        return res.status(201).json({ order });
-    } catch (err) {
-        return next(err);
-    }
-});
-
 /** PATCH /orders/:id
  * 
  * Updates information about a specific order.
@@ -67,25 +69,8 @@ router.post("/", async (req, res, next) => {
  */
 router.patch("/:id", async (req, res, next) => {
     try {
-        const order = await Order.update(req.params.id, req.body);
+        const order = await Order.updateOrderStatus(req.params.id, req.body);
         return res.json({ order });
-    } catch (err) {
-        return next(err);
-    }
-});
-
-/** DELETE /orders/:id
- * 
- * "Soft" deletes a specific order.
- * 
- * Authorization required: none
- * 
- * Returns { message: "Order deleted" }
- */
-router.delete("/:id", async (req, res, next) => {
-    try {
-        await Order.remove(req.params.id);
-        return res.json({ message: "Order deleted" });
     } catch (err) {
         return next(err);
     }
