@@ -142,7 +142,7 @@ router.get("/user/:username", authenticateJWT, ensureLoggedIn, async (req, res, 
 router.patch("/:username", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
     try {
         const targetUsername = req.params.username;
-        const requestorDfacID = res.user.dfacID;
+        const requestorDfacID = res.locals.user.dfacID;
         const targetUserDfacID = await Cook.getDFACIDbyUsername(targetUsername);
 
 

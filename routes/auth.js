@@ -39,6 +39,30 @@ router.post("/register/customer", async (req, res, next) => {
     }
 });
 
+/** POST route for customer login
+ * 
+ * logs in with { username, password }
+ * returns 
+ *     JWT token for authenticating further HTTP requests
+ * 
+ * No authorization required
+ */
+router.post("/customer/login", async (req, res, next) => {
+    try {
+        const { username, password } = req.body;
+        const customer = await Customer.authenticate(username, password);
+
+        if (customer) {
+            const token = createToken(customer);
+            return res.json({ token });
+        } else {
+            throw new BadRequestError("Bad username/password")
+        }
+    } catch (err) {
+        return next(err);
+    }
+});
+
 /** POST /auth/register/92G
  * 
  * 92G must include { dfacID, username, password, firstName, lastName, dodid,
@@ -60,6 +84,30 @@ router.post("/register/92G", async (req, res, next) => {
         const token = createToken(newCook);
 
         return res.status(201).json({ token });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** POST route for 92G login
+ * 
+ * logs in with { username, password }
+ * returns 
+ *     JWT token for authenticating further HTTP requests
+ * 
+ * No authorization required
+ */
+router.post("/92G/login", async (req, res, next) => {
+    try {
+        const { username, password } = req.body;
+        const cook = await Cook.authenticate(username, password);
+
+        if (cook) {
+            const token = createToken(cook);
+            return res.json({ token });
+        } else {
+            throw new BadRequestError("Bad username/password")
+        }
     } catch (err) {
         return next(err);
     }
