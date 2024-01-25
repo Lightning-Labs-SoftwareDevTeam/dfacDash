@@ -80,10 +80,10 @@ router.get("/", authenticateJWT, ensureLoggedIn, ensureAdmin, async (req, res, n
  *          updatedAt, deletedAt}, {...}, ...]
  * Requires login and DFAC manager rights
 * */
-router.get("/:dfacID", authenticateJWT, ensureLoggedIn, ensureManager, async (req, res, next) => {
+router.get("/dfac/:dfacID", authenticateJWT, ensureLoggedIn, ensureManager, async (req, res, next) => {
     try {
-        const dfacID = req.params.dfacID
-        const managerDfacID = res.user.dfacID
+        const dfacID = parseInt(req.params.dfacID, 10);
+        const managerDfacID = res.locals.user.dfacID
 
         if (dfacID !== managerDfacID) {
             throw new ForbiddenError("DFAC access denied");
@@ -104,18 +104,20 @@ router.get("/:dfacID", authenticateJWT, ensureLoggedIn, ensureManager, async (re
  *                          has username === username passed in
  *    or, manager rights for the dfac matching username-dfacID
  */
-router.get("/:username", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
+router.get("/user/:username", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
     try {
         const requestorUsername = res.locals.user.username;
         const targetUsername = req.params.username;
+        const user = res.locals.user;
 
-        const requestorDfacID = res.user.dfacID;
+        console.log("Requestor username: ", requestorUsername, " Target username: ", targetUsername);
+        const requestorDfacID = res.locals.user.dfacID;
+        
         const targetUserDfacID = await Cook.getDFACIDbyUsername(targetUsername);
+        console.log("Requestor;s dfacID: ", requestorDfacID, " Target user's dfacID: ", targetUserDfacID);
 
-        if (requestorUsername === targetUsername || res.locals.user.isAdmin) {
-            const cook = await Cook.get(targetUsername);
-            return res.json({ cook });
-        } else if (requestorDfacID === targetUserDfacID && res.locals.user.isManager){
+        if (user.username === targetUsername || user.isAdmin ||
+            (user.isManager && user.dfacID === await Cook.getDFACIDbyUsername(targetUsername))) {
             const cook = await Cook.get(targetUsername);
             return res.json({ cook });
         } else {
