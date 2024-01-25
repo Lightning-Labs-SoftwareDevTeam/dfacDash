@@ -11,7 +11,7 @@ const dfacUpdateSchema = require("../schemas/dfacUpdate.json");
 const Dfac = require("../models/dfac");
 
 const { ensureLoggedIn, ensureAdmin, authenticateJWT } = require("../middleware/auth");
-const { BadRequestError } = require("../expressError");
+const { BadRequestError, ForbiddenError } = require("../expressError");
 
 /** CRUD router functions for DFAC data */
 
@@ -60,8 +60,8 @@ router.post("/", authenticateJWT, ensureLoggedIn, ensureAdmin, async(req, res, n
  */
 router.patch("/:dfacID", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
     try {
-        const dfacTarget = req.params.dfacID;
-        const requestorDfacID = res.user.dfacID;
+        const dfacTarget = parseInt(req.params.dfacID, 10);
+        const requestorDfacID = res.locals.user.dfacID;
 
         const validator = jsonschema.validate(req.body, dfacUpdateSchema);
         if (!validator.valid) {
@@ -95,10 +95,10 @@ router.patch("/:dfacID", authenticateJWT, ensureLoggedIn, async (req, res, next)
  * 
  * Requires updateHours === TRUE and matching dfac IDs                           
  */
-router.patch("/:dfacID", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
+router.patch("/:dfacID/hours", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
     try {
-        const dfacTarget = req.params.dfacID;
-        const requestorDfacID = res.user.dfacID;
+        const dfacTarget = parseInt(req.params.dfacID, 10);
+        const requestorDfacID = res.locals.user.dfacID;
 
         const validator = jsonschema.validate(req.body, dfacUpdateSchema);
         if (!validator.valid) {
@@ -106,10 +106,12 @@ router.patch("/:dfacID", authenticateJWT, ensureLoggedIn, async (req, res, next)
             throw new BadRequestError(errs);
         }
 
+        console.log("Requestor DFAC ID: ", requestorDfacID, "Target DFAC ID: ", dfacTarget);
+        console.log("User object: ", res.locals.user);
         if (res.locals.user.isAdmin) {
             const dfac = await Dfac.updateHours(dfacTarget, req.body);
             return res.json({ dfac });
-        } else if (requestorDfacID === dfacTarget && res.locals.user.updateHours) {
+        } else if (requestorDfacID === dfacTarget && res.locals.user.canUpdateHours) {
             const dfac = await Dfac.updateHours(dfacTarget, req.body);
             return res.json({ dfac });
         } else {
