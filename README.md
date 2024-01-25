@@ -160,6 +160,7 @@ Another repo with React components consumes the API for single page loading of a
 3. check the ports where the containers are running from (``docker ps``)
 4. update /config.js with the correct port numbers
 5. copy the /sql/ directory into docker. (``docker cp ./sql/ [containername]:/media``)
-6. in Docker exec, run ``dfacdash.sql``
+6. in Docker exec, run ``dfacdash.sql``. Ensure you're in correct directory, then run the following command:
+```psql -U [username] -d [databasename] -a -f dfacdash.sql
 
 - `seed` script inside of package.json works with a postgres database setup; see dfacdash.sql file for further details.
