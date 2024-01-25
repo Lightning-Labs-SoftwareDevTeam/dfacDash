@@ -12,6 +12,7 @@ const { NotFoundError } = require("./expressError");
 const customerRoutes = require("./routes/customers");
 const cookRoutes = require("./routes/cooks");
 const dfacRoutes = require("./routes/dfacs");
+const itemRoutes = require("./routes/items");
 const authRoutes = require("./routes/auth");
 
 // Middleware
@@ -28,6 +29,7 @@ app.use("/92G", cookRoutes);
 app.use("/dfacs", dfacRoutes);
 // routes open to anyone do not require a token
 app.use("/auth", authRoutes);
+app.use("/items", itemRoutes);
 
 // Handle most errors with 404
 app.use((req, res, next) => {
