@@ -103,6 +103,8 @@ router.post("/92G/login", async (req, res, next) => {
         const cook = await Cook.authenticate(username, password);
 
         if (cook) {
+            cook.role = "92G";
+            
             const token = createToken(cook);
             return res.json({ token });
         } else {
