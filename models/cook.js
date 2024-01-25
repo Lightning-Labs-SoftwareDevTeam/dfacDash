@@ -350,9 +350,9 @@ class Cook {
                                             email,
                                             profile_pic AS "profilePicURL",
                                             is_admin AS "isAdmin",
-                                            is_manager AS "isManager,
+                                            is_manager AS "isManager",
                                             update_menu AS "updateMenu",
-                                            update_hours AS "updateHours,
+                                            update_hours AS "updateHours",
                                             update_meals AS "updateMeals",
                                             update_orders AS "updateOrders",
                                             updated_at AS "updatedAt"`;

@@ -60,8 +60,8 @@ router.post("/", authenticateJWT, ensureLoggedIn, ensureAdmin, async(req, res, n
  */
 router.patch("/:dfacID", authenticateJWT, ensureLoggedIn, async (req, res, next) => {
     try {
-        const dfacTarget = req.params.dfacID;
-        const requestorDfacID = res.user.dfacID;
+        const dfacTarget = parseInt(req.params.dfacID, 10);
+        const requestorDfacID = res.locals.user.dfacID;
 
         const validator = jsonschema.validate(req.body, dfacUpdateSchema);
         if (!validator.valid) {

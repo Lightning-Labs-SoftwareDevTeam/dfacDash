@@ -11,6 +11,7 @@ const { authenticateJWT } = require("./middleware/auth");
 const { NotFoundError } = require("./expressError");
 const customerRoutes = require("./routes/customers");
 const cookRoutes = require("./routes/cooks");
+const dfacRoutes = require("./routes/dfacs");
 const authRoutes = require("./routes/auth");
 
 // Middleware
@@ -21,8 +22,10 @@ app.use(morgan("tiny"));
 // routes that require authentication will use the auth JWT middleware
 customerRoutes.use(authenticateJWT);
 cookRoutes.use(authenticateJWT);
+dfacRoutes.use(authenticateJWT);
 app.use("/customers", customerRoutes);
 app.use("/92G", cookRoutes);
+app.use("/dfacs", dfacRoutes);
 // routes open to anyone do not require a token
 app.use("/auth", authRoutes);
 
