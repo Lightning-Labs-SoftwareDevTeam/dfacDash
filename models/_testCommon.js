@@ -16,7 +16,7 @@ async function commonBeforeAll() {
     await db.query("DELETE FROM cooks");
     await db.query("DELETE FROM items");
     await db.query("DELETE FROM orders");
-    await db.query("DELETE FROM order_items");
+
 
     const c1Hash = await bcrypt.hash('password1', BCRYPT_WORK_FACTOR);
     console.log(c1Hash);

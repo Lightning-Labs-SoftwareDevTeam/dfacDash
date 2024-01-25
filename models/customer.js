@@ -272,27 +272,42 @@ class Customer {
     }
 }
 function isInOrderWindow() {
-    // Define the allowed time frames for ordering
-    const allowedTimeFrames = [
+    // Get current date and time
+    const currentDate = new Date();
+    const currentDayOfWeek = currentDate.getDay(); // 0 is Sunday, 1 is Monday, ..., 6 is Saturday
+    const currentHour = currentDate.getHours();
+    const currentMinute = currentDate.getMinutes();
+
+    // Define order windows for weekdays (Monday through Friday)
+    const weekdayOrderWindows = [
         { startHour: 6, startMinute: 30, endHour: 8, endMinute: 30 },
         { startHour: 10, startMinute: 0, endHour: 11, endMinute: 0 },
         { startHour: 15, startMinute: 30, endHour: 16, endMinute: 30 }
     ];
 
-    // Get current date and time
-    const currentDate = new Date();
-    const currentHour = currentDate.getHours();
-    const currentMinute = currentDate.getMinutes();
+    // Define separate time frames for brunch and dinner on weekends (Saturday and Sunday)
+    const brunchWindow = { startHour: 7, startMinute: 30, endHour: 11, endMinute: 0 };
+    const dinnerWindow = { startHour: 14, startMinute: 30, endHour: 15, endMinute: 30 };
 
-    // Check if the current time is within any of the allowed time frames
-    const isWithinAllowedTimeFrame = allowedTimeFrames.some(({ startHour, startMinute, endHour, endMinute }) => {
-        const startTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), startHour, startMinute);
-        const endTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), endHour, endMinute);
+    // Check if the current time is within the allowed time frames
+    if (currentDayOfWeek >= 1 && currentDayOfWeek <= 5) {
+        // Check for weekdays
+        return weekdayOrderWindows.some(({ startHour, startMinute, endHour, endMinute }) => {
+            const startTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), startHour, startMinute);
+            const endTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), endHour, endMinute);
 
-        return currentDate >= startTime && currentDate <= endTime;
-    });
+            return currentDate >= startTime && currentDate <= endTime;
+        });
+    } else if (currentDayOfWeek === 0 || currentDayOfWeek === 6) {
+        // Check for weekends (Saturday and Sunday)
+        const isBrunchTime = currentHour >= brunchWindow.startHour && currentHour < brunchWindow.endHour;
+        const isDinnerTime = currentHour >= dinnerWindow.startHour && currentHour < dinnerWindow.endHour;
 
-    return isWithinAllowedTimeFrame;
+        return isBrunchTime || isDinnerTime;
+    } else {
+        // Default case (other days)
+        return false;
+    }
 }
 
 // Example usage when a user clicks the "order now" button
@@ -305,4 +320,5 @@ if (canOrder) {
     // Show a flash message indicating that ordering is not allowed at the current time
     console.log("Ordering is not allowed at the current time.");
 }
+
 module.exports = Customer;

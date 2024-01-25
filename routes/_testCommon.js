@@ -18,7 +18,6 @@ async function commonBeforeAll() {
     await db.query("DELETE FROM cooks");
     await db.query("DELETE FROM items");
     await db.query("DELETE FROM orders");
-    await db.query("DELETE FROM order_items");
 
     await Customer.register(
         {
