@@ -24,8 +24,9 @@ class Cook {
     static async authenticate(username, password) {
         // look for user first
         const result = await db.query(
-            `SELECT dfac_id AS "dfacID"
+            `SELECT dfac_id AS "dfacID",
                     username,
+                    password,
                     rank,
                     fname AS "firstName",
                     lname AS "lastName",
@@ -281,7 +282,7 @@ class Cook {
         const usernameVarIdx = "$" + (values.length + 1);
 
         // Automatically adding current timestamp into updated_at field
-        const querySql = `UPDATE customers
+        const querySql = `UPDATE cooks
                             SET ${setCols}, updated_at = CURRENT_TIMESTAMP
                             WHERE username = ${usernameVarIdx}
                             RETURNING dfac_id AS "dfacID",
@@ -292,9 +293,9 @@ class Cook {
                                         email,
                                         profile_pic AS "profilePicURL",
                                         is_admin AS "isAdmin",
-                                        is_manager AS "isManager,
+                                        is_manager AS "isManager",
                                         update_menu AS "updateMenu",
-                                        update_hours AS "updateHours,
+                                        update_hours AS "updateHours",
                                         update_meals AS "updateMeals",
                                         update_orders AS "updateOrders",
                                         updated_at AS "updatedAt"`;
@@ -338,7 +339,7 @@ class Cook {
             const usernameVarIdx = "$" + (values.length + 1);
     
             // Automatically adding current timestamp into updated_at field
-            const querySql = `UPDATE customers
+            const querySql = `UPDATE cooks
                                 SET ${setCols}, updated_at = CURRENT_TIMESTAMP
                                 WHERE username = ${usernameVarIdx}
                                 RETURNING dfac_id AS "dfacID",
