@@ -10,8 +10,8 @@ const PORT = +process.env.PORT || 3001;
 
 // Use different database depending on use case (dev, testing, or prod)
 function getDatabaseUri() {
-    const URI_DEV = "postgresql://dfacdash_dev:dfacdash@localhost:[]/dfacdash_dev"; //TODO: Enter your port number
-    const URI_TEST = "postgresql://dfacdash_test:dfacdash@localhost:[]/dfacdash_test"; //TODO: Enter your port number
+    const URI_DEV = "postgresql://dfacdash_dev:dfacdash@localhost:6622/dfacdash"; //TODO: Enter your port number
+    const URI_TEST = "postgresql://dfacdash_test:dfacdash@localhost:6623/dfacdash"; //TODO: Enter your port number
 
     return (process.env.NODE_ENV === "test")
         ? URI_TEST

@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: dfacdash_dev
       POSTGRES_PASSWORD: dfacdash
     ports:
-      - "0:5432"
+      - "6622:5432"
 
   dfacdash_test:
     image: postgres:latest
@@ -18,4 +18,4 @@ services:
       POSTGRES_USER: dfacdash_test
       POSTGRES_PASSWORD: dfacdash
     ports:
-      - "0:5433"
+      - "6623:5432"
